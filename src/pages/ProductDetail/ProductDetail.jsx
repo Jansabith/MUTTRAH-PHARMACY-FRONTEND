@@ -10,7 +10,7 @@ import {
 } from '../../services/api'
 
 export default function ProductDetail() {
-  const { id } = useParams()
+  const { slug } = useParams()
   const [product, setProduct] = useState(null)
   const [relatedProducts, setRelatedProducts] = useState([])
   const [activeImage, setActiveImage] = useState('')
@@ -25,7 +25,7 @@ export default function ProductDetail() {
         setLoading(true)
         setError('')
 
-        const productData = await productsAPI.getById(id)
+        const productData = await productsAPI.getBySlug(slug)
         const related = await productsAPI.getAll({
           category: productData.category,
         })
@@ -33,7 +33,7 @@ export default function ProductDetail() {
         if (active) {
           setProduct(productData)
           setRelatedProducts(
-            related.filter((item) => String(item.id) !== String(id)).slice(0, 3),
+            related.filter((item) => String(item.slug) !== String(slug)).slice(0, 3),
           )
           setActiveImage(getMediaUrl(productData.image))
         }
@@ -49,7 +49,7 @@ export default function ProductDetail() {
     return () => {
       active = false
     }
-  }, [id])
+  }, [slug])
 
   const galleryImages = useMemo(() => {
     if (!product) return []

@@ -4,6 +4,22 @@ import Loader from '../../components/Loader/Loader'
 import ProductCard from '../../components/ProductCard/ProductCard'
 import ProductFilters from '../../components/ProductFilters/ProductFilters'
 import { categoriesAPI, companiesAPI, productsAPI } from '../../services/api'
+import { motion } from 'framer-motion'
+
+const fadeUpVariant = {
+  hidden: { opacity: 0, y: 30 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } }
+}
+
+const staggerContainer = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1
+    }
+  }
+}
 
 export default function Products() {
   const [searchParams, setSearchParams] = useSearchParams()
@@ -165,46 +181,57 @@ export default function Products() {
   }
 
   return (
-    <section className="section-padding bg-[#f8f5ee]">
+    <section className="section-padding bg-[#f8f5ee] min-h-screen">
       <div className="container-shell">
-        <div className="mb-12 grid gap-6 border-b border-[#ded8cc] pb-10 lg:grid-cols-[1fr_0.8fr] lg:items-end">
+        <motion.div 
+          initial="hidden"
+          animate="visible"
+          variants={fadeUpVariant}
+          className="mb-12 border-b border-[#ded8cc] pb-10"
+        >
           <div>
             <p className="micro-copy text-[#70443d]">Products</p>
             <h1 className="display-serif page-title mt-4 text-stone-950">
-              Live product catalog
+              Product catalog
             </h1>
           </div>
-          <p className="max-w-xl text-base leading-7 text-stone-600 lg:justify-self-end lg:text-right">
-            Products, brands, and categories are fetched directly from your
-            Django REST Framework APIs, including filter-specific product calls.
-          </p>
-        </div>
+        </motion.div>
 
         <div className="grid gap-8 lg:grid-cols-[320px_1fr]">
-          {loadingCompanies ? (
-            <Loader label="Loading catalog filters" />
-          ) : (
-            <ProductFilters
-              companies={companies}
-              companyLines={companyLines}
-              categories={categories}
-              selectedCompany={selectedCompany}
-              selectedCompanyLine={selectedCompanyLine}
-              selectedCategory={selectedCategory}
-              loadingCategories={loadingCategories}
-              search={search}
-              onCompanyChange={(value) => updateCatalogParam('company', value)}
-              onCompanyLineChange={(value) =>
-                updateCatalogParam('company_line', value)
-              }
-              onCategoryChange={(value) => updateCatalogParam('category', value)}
-              onSearchChange={setSearch}
-              onClear={clearFilters}
-            />
-          )}
+          <motion.div 
+            initial={{ opacity: 0, x: -30 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6 }}
+          >
+            {loadingCompanies ? (
+              <Loader label="Loading catalog filters" />
+            ) : (
+              <ProductFilters
+                companies={companies}
+                companyLines={companyLines}
+                categories={categories}
+                selectedCompany={selectedCompany}
+                selectedCompanyLine={selectedCompanyLine}
+                selectedCategory={selectedCategory}
+                loadingCategories={loadingCategories}
+                search={search}
+                onCompanyChange={(value) => updateCatalogParam('company', value)}
+                onCompanyLineChange={(value) =>
+                  updateCatalogParam('company_line', value)
+                }
+                onCategoryChange={(value) => updateCatalogParam('category', value)}
+                onSearchChange={setSearch}
+                onClear={clearFilters}
+              />
+            )}
+          </motion.div>
 
-          <div>
-            <div className="mb-5 flex flex-col gap-2 border border-[#ded8cc] bg-[#fffdf8] p-4 sm:flex-row sm:items-center sm:justify-between">
+          <motion.div 
+            initial="hidden"
+            animate="visible"
+            variants={staggerContainer}
+          >
+            <motion.div variants={fadeUpVariant} className="mb-5 flex flex-col gap-2 rounded-2xl border border-[#ded8cc] bg-[#fffdf8] p-5 shadow-sm sm:flex-row sm:items-center sm:justify-between">
               <p className="text-sm font-semibold text-stone-700">
                 {hasActiveFilter
                   ? `Showing ${filteredProducts.length} products`
@@ -219,18 +246,18 @@ export default function Products() {
                       ? `API: /products/?category=${selectedCategory}`
                       : 'Live filters'}
               </p>
-            </div>
+            </motion.div>
 
             {error ? (
-              <div className="border border-[#70443d]/30 bg-[#fffdf8] p-5 text-sm font-semibold text-[#70443d]">
+              <motion.div variants={fadeUpVariant} className="rounded-2xl border border-[#70443d]/30 bg-[#fffdf8] p-5 text-sm font-semibold text-[#70443d]">
                 {error}
-              </div>
+              </motion.div>
             ) : null}
 
             {loadingProducts ? <Loader label="Loading products" /> : null}
 
             {!hasActiveFilter && !loadingProducts && !error ? (
-              <div className="border border-dashed border-[#b7774f] bg-[#fffdf8] p-6 text-center sm:p-10">
+              <motion.div variants={fadeUpVariant} className="rounded-3xl border border-dashed border-[#b7774f] bg-[#fffdf8] p-8 text-center sm:p-12 shadow-sm">
                 <h2 className="display-serif text-4xl leading-none text-stone-950 sm:text-5xl">
                   Select a company first
                 </h2>
@@ -238,28 +265,28 @@ export default function Products() {
                   Use the company filter, company line, or Products menu to load
                   your live product list.
                 </p>
-              </div>
+              </motion.div>
             ) : null}
 
             {hasActiveFilter && !loadingProducts && !error && filteredProducts.length === 0 ? (
-              <div className="border border-dashed border-[#ded8cc] bg-[#fffdf8] p-6 text-center sm:p-10">
+              <motion.div variants={fadeUpVariant} className="rounded-3xl border border-dashed border-[#ded8cc] bg-[#fffdf8] p-8 text-center sm:p-12 shadow-sm">
                 <h2 className="display-serif text-4xl leading-none text-stone-950 sm:text-5xl">
                   No products found
                 </h2>
                 <p className="mt-4 text-stone-600">
                   Try another company, category, or search term.
                 </p>
-              </div>
+              </motion.div>
             ) : null}
 
             {hasActiveFilter && !loadingProducts && !error && filteredProducts.length > 0 ? (
-              <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
+              <motion.div variants={staggerContainer} className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
                 {filteredProducts.map((product) => (
                   <ProductCard key={product.id} product={product} />
                 ))}
-              </div>
+              </motion.div>
             ) : null}
-          </div>
+          </motion.div>
         </div>
       </div>
     </section>
