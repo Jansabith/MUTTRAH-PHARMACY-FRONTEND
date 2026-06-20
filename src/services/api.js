@@ -69,8 +69,8 @@ export const productsAPI = {
     return normalizeList(data)
   },
 
-  async getById(id) {
-    const { data } = await apiClient.get(`/products/${id}/`)
+  async getBySlug(slug) {
+    const { data } = await apiClient.get(`/products/${slug}/`)
     return data
   },
 }

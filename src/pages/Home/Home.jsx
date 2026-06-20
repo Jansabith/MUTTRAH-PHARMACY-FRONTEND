@@ -4,6 +4,22 @@ import HeroSection from '../../components/HeroSection/HeroSection'
 import Loader from '../../components/Loader/Loader'
 import useCatalogData from '../../hooks/useCatalogData'
 import { websiteAPI } from '../../services/api'
+import { motion } from 'framer-motion'
+
+const fadeUpVariant = {
+  hidden: { opacity: 0, y: 30 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } }
+}
+
+const staggerContainer = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.15
+    }
+  }
+}
 
 export default function Home() {
   const { companies, loading, error } = useCatalogData()
@@ -45,41 +61,63 @@ export default function Home() {
   }
 
   return (
-    <>
+    <div className="overflow-hidden">
       <HeroSection content={pageContent} />
 
+      {/* Intro & Features Section */}
       <section className="section-padding border-b border-[#ded8cc] bg-[#fffdf8]">
         <div className="container-shell grid gap-12 lg:grid-cols-[0.9fr_1.1fr]">
-          <div className="w-full">
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-100px" }}
+            variants={fadeUpVariant}
+            className="w-full"
+          >
             <p className="micro-copy text-[#70443d]">
               {pageContent.intro_eyebrow}
             </p>
             <h2 className="display-serif section-title mt-5 max-w-4xl text-stone-950">
               {pageContent.intro_title}
             </h2>
-          </div>
-          <div className="grid gap-4 sm:grid-cols-2 w-full min-w-0">
+          </motion.div>
+          <motion.div 
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-100px" }}
+            variants={staggerContainer}
+            className="grid gap-6 sm:grid-cols-2 w-full min-w-0"
+          >
             {features.map((item) => (
-              <article
+              <motion.article
+                variants={fadeUpVariant}
+                whileHover={{ y: -5 }}
                 key={item.title}
-                className="border border-[#ded8cc] bg-[#f8f5ee] p-5 sm:p-6"
+                className="border border-[#ded8cc] bg-[#f8f5ee] rounded-3xl p-6 sm:p-8 shadow-sm hover:shadow-md transition-all duration-300"
               >
-                <span className="mb-8 block h-px w-16 bg-[#b7774f]" />
+                <span className="mb-8 block h-1 w-16 rounded-full bg-[#b7774f]" />
                 <h3 className="display-serif text-[1.85rem] leading-none text-stone-950 sm:text-3xl">
                   {item.title}
                 </h3>
                 <p className="mt-5 text-sm leading-7 text-stone-600">
                   {item.description}
                 </p>
-              </article>
+              </motion.article>
             ))}
-          </div>
+          </motion.div>
         </div>
       </section>
 
+      {/* Brands Section */}
       <section className="section-padding home-mobile-section-break border-b border-[#ded8cc] bg-[#f8f5ee]">
         <div className="container-shell">
-          <div className="mb-12 flex flex-col gap-6 md:flex-row md:items-start md:justify-between">
+          <motion.div 
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-100px" }}
+            variants={fadeUpVariant}
+            className="mb-12 flex flex-col gap-6 md:flex-row md:items-start md:justify-between"
+          >
             <div className="max-w-3xl w-full min-w-0">
               <p className="micro-copy text-[#70443d]">
                 {pageContent.brands_eyebrow}
@@ -95,56 +133,93 @@ export default function Home() {
             </div>
             <Link
               to="/products"
-              className="inline-flex w-fit md:mt-16 rounded-full border border-stone-950 px-5 py-3 text-xs font-bold uppercase text-stone-950 transition hover:bg-stone-950 hover:text-[#fffdf8] shrink-0"
+              className="inline-flex w-fit md:mt-16 rounded-full border border-stone-950 px-6 py-4 text-xs font-bold uppercase text-stone-950 transition-all hover:bg-stone-950 hover:text-[#fffdf8] hover:scale-105 active:scale-95 shrink-0"
             >
               View All Products
             </Link>
-          </div>
+          </motion.div>
 
           {loading ? <Loader /> : null}
           {error ? (
-            <div className="border border-[#70443d]/30 bg-[#fffdf8] p-5 text-sm font-semibold text-[#70443d]">
+            <div className="border border-[#70443d]/30 bg-[#fffdf8] p-5 text-sm font-semibold text-[#70443d] rounded-2xl">
               {error}
             </div>
           ) : null}
           {!loading && !error ? (
-            <div className="grid auto-rows-[15.5rem] gap-4 sm:grid-cols-2 lg:grid-cols-4 w-full min-w-0">
-              {featuredCompanies.map((company, index) => (
-                <article
+            <motion.div 
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: "-100px" }}
+              variants={{
+                hidden: { opacity: 0 },
+                visible: {
+                  opacity: 1,
+                  transition: {
+                    staggerChildren: 0.2
+                  }
+                }
+              }}
+              className="grid auto-rows-[15.5rem] gap-6 sm:grid-cols-2 lg:grid-cols-4 w-full min-w-0"
+            >
+              {featuredCompanies.map((company) => (
+                <motion.div
+                  variants={{
+                    hidden: { opacity: 0, y: 30 },
+                    visible: { opacity: 1, y: 0, transition: { duration: 0.4, ease: "easeOut" } }
+                  }}
+                  whileHover={{ y: -5 }}
                   key={company.id}
-                  className="brand-card-reveal group flex h-full flex-col border border-[#ded8cc] bg-[#fffdf8] p-5 shadow-sm shadow-stone-950/0 transition duration-300 ease-out hover:-translate-y-1 hover:border-[#b7774f] hover:shadow-xl hover:shadow-stone-950/10 sm:p-6"
-                  style={{ animationDelay: `${index * 260}ms` }}
+                  className="h-full"
                 >
-                  <span className="mb-7 block h-px w-12 bg-[#b7774f] transition-all duration-300 group-hover:w-20" />
-                  <h3 className="display-serif break-words text-[1.85rem] leading-none text-stone-950 sm:text-3xl">
-                    {company.name}
-                  </h3>
-                  <p className="mt-5 line-clamp-4 text-sm leading-6 text-stone-600">
-                    {company.description}
-                  </p>
-                </article>
+                  <Link
+                    to={`/products?company=${company.id}`}
+                    className="brand-card-reveal group flex h-full flex-col border border-[#ded8cc] rounded-3xl bg-[#fffdf8] p-6 shadow-sm transition-all duration-300 hover:border-[#b7774f] hover:shadow-xl sm:p-8"
+                  >
+                    <span className="mb-7 block h-1 w-12 rounded-full bg-[#b7774f] transition-all duration-300 group-hover:w-20" />
+                    <h3 className="display-serif break-words text-[1.85rem] leading-none text-stone-950 sm:text-3xl">
+                      {company.name}
+                    </h3>
+                    <p className="mt-5 line-clamp-4 text-sm leading-6 text-stone-600">
+                      {company.description}
+                    </p>
+                  </Link>
+                </motion.div>
               ))}
-            </div>
+            </motion.div>
           ) : null}
         </div>
       </section>
 
+      {/* Trust Section */}
       <section className="section-padding border-b border-[#ded8cc] bg-stone-950 text-[#fffdf8]">
         <div className="container-shell grid gap-12 lg:grid-cols-[0.8fr_1.2fr]">
-          <div className="w-full min-w-0">
+          <motion.div 
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-100px" }}
+            variants={fadeUpVariant}
+            className="w-full min-w-0"
+          >
             <p className="micro-copy text-[#d7b08d]">
               {pageContent.trust_eyebrow}
             </p>
-            <h2 className="display-serif section-title mt-5">
+            <h2 className="display-serif section-title mt-5 text-white/90">
               {pageContent.trust_title}
             </h2>
-          </div>
+          </motion.div>
 
-          <div className="grid gap-px overflow-hidden border border-white/10 bg-white/10 sm:grid-cols-2 w-full min-w-0">
+          <motion.div 
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-100px" }}
+            variants={staggerContainer}
+            className="grid gap-6 sm:grid-cols-2 w-full min-w-0"
+          >
             {trustItems.map((item, index) => (
-              <div
+              <motion.div
+                variants={fadeUpVariant}
                 key={item.id || item.title}
-                className="bg-stone-950 p-6 sm:p-8 flex flex-col justify-between"
+                className="bg-[#24211d] rounded-3xl p-8 border border-white/10 hover:border-white/20 transition-colors shadow-2xl flex flex-col justify-between"
               >
                 <div className="flex items-center justify-between gap-6">
                   <span className="text-sm font-semibold tracking-wider text-[#d7b08d]">
@@ -155,14 +230,32 @@ export default function Home() {
                 <h3 className="display-serif mt-8 text-2xl leading-snug text-white sm:text-3xl">
                   {item.title}
                 </h3>
-              </div>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         </div>
       </section>
 
-      <section className="bg-[#70443d] py-20 text-[#fffdf8]">
-        <div className="container-shell flex flex-col gap-8 md:flex-row md:items-center md:justify-between">
+      {/* CTA Section */}
+      <section className="bg-[#70443d] py-20 text-[#fffdf8] relative overflow-hidden">
+        <div className="absolute inset-0 opacity-10 pointer-events-none">
+           <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                 <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+                    <path d="M 40 0 L 0 0 0 40" fill="none" stroke="currentColor" strokeWidth="1"/>
+                 </pattern>
+              </defs>
+              <rect width="100%" height="100%" fill="url(#grid)" />
+           </svg>
+        </div>
+
+        <motion.div 
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-100px" }}
+          variants={fadeUpVariant}
+          className="container-shell relative z-10 flex flex-col gap-8 md:flex-row md:items-center md:justify-between"
+        >
           <div className="w-full min-w-0">
             <p className="micro-copy text-[#f1d1b8]">{pageContent.cta_eyebrow}</p>
             <h2 className="display-serif mt-4 max-w-3xl text-5xl leading-none sm:text-6xl md:text-7xl">
@@ -171,12 +264,12 @@ export default function Home() {
           </div>
           <Link
             to="/contact"
-            className="inline-flex w-full justify-center rounded-full border border-[#fffdf8] px-6 py-4 text-xs font-bold uppercase transition hover:bg-[#fffdf8] hover:text-[#70443d] sm:w-fit"
+            className="inline-flex w-full justify-center rounded-full bg-[#fffdf8] px-8 py-4 text-sm font-bold uppercase tracking-wider text-[#70443d] transition-all hover:bg-[#f1d1b8] hover:scale-105 active:scale-95 shadow-xl sm:w-fit shrink-0"
           >
             {pageContent.cta_button_label}
           </Link>
-        </div>
+        </motion.div>
       </section>
-    </>
+    </div>
   )
 }

@@ -18,6 +18,8 @@
 }
 
 html, body {
+  overflow-x: clip;
+  max-width: 100%;
 }
 
 html {
@@ -245,4 +247,21 @@ textarea {
   .hero-title {
     font-size: clamp(2.35rem, 12vw, 3.5rem);
   }
+}
+
+/* Apply elegant rounded corners to cards, panels, maps, and inputs globally */
+article,
+aside,
+iframe,
+.product-image-fallback,
+.grid.gap-px.overflow-hidden,
+.mt-4.border[class*="bg-[#f8f5ee]"] {
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+input,
+select,
+button[class*="h-18"] {
+  border-radius: 10px;
 }
