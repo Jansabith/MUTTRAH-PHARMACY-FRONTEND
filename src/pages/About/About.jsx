@@ -4,6 +4,7 @@ import Loader from '../../components/Loader/Loader'
 import useCatalogData from '../../hooks/useCatalogData'
 import { websiteAPI, getMediaUrl } from '../../services/api'
 import { motion } from 'framer-motion'
+import SEO from '../../components/SEO/SEO'
 
 const muttrahPharmacyMapUrl =
   'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3655.70020525746!2d58.542142999999996!3d23.615082400000002!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3e91f900164bdb5b%3A0x1c2403fc0d8bf5e1!2sMUTTRAH%20PHARMACY!5e1!3m2!1sen!2sin!4v1781096686549!5m2!1sen!2sin'
@@ -61,6 +62,11 @@ export default function About() {
 
   return (
     <div className="overflow-hidden">
+      <SEO
+        title={pageContent.meta_title || "About Us"}
+        description={pageContent.meta_description}
+        keywords={pageContent.meta_keywords}
+      />
       {/* Hero Section */}
       <section className="section-padding border-b border-[#ded8cc] bg-[#fffdf8]">
         <div className="container-shell grid gap-10 lg:grid-cols-[0.95fr_1.05fr]">

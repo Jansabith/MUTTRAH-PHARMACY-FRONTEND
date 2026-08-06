@@ -8,6 +8,8 @@ import {
   getProductSizes,
   productsAPI,
 } from '../../services/api'
+import SEO from '../../components/SEO/SEO'
+import useWhatsAppNumber from '../../hooks/useWhatsAppNumber'
 
 export default function ProductDetail() {
   const { slug } = useParams()
@@ -16,6 +18,7 @@ export default function ProductDetail() {
   const [activeImage, setActiveImage] = useState('')
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+  const whatsappNumber = useWhatsAppNumber()
 
   useEffect(() => {
     let active = true
@@ -92,8 +95,39 @@ export default function ProductDetail() {
     )
   }
 
+  const productSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'Product',
+    'name': product.name,
+    'description': product.description,
+    'image': getMediaUrl(product.image),
+    'category': product.category_name,
+    'brand': {
+      '@type': 'Brand',
+      'name': product.company_name
+    },
+    'offers': {
+      '@type': 'AggregateOffer',
+      'priceCurrency': 'OMR',
+      'offers': [
+        {
+          '@type': 'Offer',
+          'availability': product.is_available !== false ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
+          'url': window.location.href
+        }
+      ]
+    }
+  }
+
   return (
     <>
+      <SEO
+        title={product.meta_title || product.name}
+        description={product.meta_description || product.description?.substring(0, 155)}
+        keywords={product.meta_keywords || `${product.name}, ${product.company_name}, Muttrah Pharmacy, Oman`}
+        image={getMediaUrl(product.image)}
+        schema={productSchema}
+      />
       <section className="border-b border-[#ded8cc] bg-[#fffdf8] pb-6 pt-2 sm:pb-8 sm:pt-3 lg:pb-6 lg:pt-3">
         <div className="container-shell max-w-[96rem]">
           <Link
@@ -213,7 +247,7 @@ export default function ProductDetail() {
 
               <div className="mt-6 flex flex-wrap gap-3">
                 <a
-                  href={`https://wa.me/96899793939?text=${encodeURIComponent(`Hello,\n\nI am interested in purchasing the product: ${product.name}.\n\nPlease share the price, availability, and payment details.\n\nThank you.`)}`}
+                  href={`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(`Hello,\n\nI am interested in purchasing the product: ${product.name}.\n\nPlease share the price, availability, and payment details.\n\nThank you.`)}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-[#25D366] bg-[#25D366] px-5 py-2.5 text-xs font-bold uppercase text-white transition hover:border-[#128C7E] hover:bg-[#128C7E] sm:w-auto"
@@ -224,7 +258,7 @@ export default function ProductDetail() {
                   Buy Now
                 </a>
                 <a
-                  href={`https://wa.me/96899793939?text=${encodeURIComponent(`Hello,\n\nI would like to know more about ${product.name}.`)}`}
+                  href={`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(`Hello,\n\nI would like to know more about ${product.name}.`)}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex w-full items-center justify-center rounded-full border border-stone-950 bg-stone-950 px-5 py-2.5 text-xs font-bold uppercase text-[#fffdf8] transition hover:border-[#70443d] hover:bg-[#70443d] sm:w-auto"

@@ -13,6 +13,7 @@ export default function Navbar() {
   const [open, setOpen] = useState(false)
   const [hidden, setHidden] = useState(false)
   const [companies, setCompanies] = useState([])
+  const [activeCompanyHover, setActiveCompanyHover] = useState(null)
   const lastScrollY = useRef(0)
 
   useEffect(() => {
@@ -21,7 +22,10 @@ export default function Navbar() {
     async function loadCompanies() {
       try {
         const companyList = await companiesAPI.getAll()
-        if (active) setCompanies(companyList)
+        if (active) {
+          setCompanies(companyList)
+          if (companyList.length > 0) setActiveCompanyHover(companyList[0])
+        }
       } catch {
         if (active) setCompanies([])
       }
@@ -102,64 +106,63 @@ export default function Navbar() {
                 Products
               </NavLink>
               <span
-                className="absolute left-1/2 top-full h-5 w-72 -translate-x-1/2 xl:w-80"
+                className="absolute left-0 right-0 top-full h-4"
                 aria-hidden="true"
               />
-              <div className="invisible absolute left-1/2 top-full z-10 w-72 -translate-x-1/2 translate-y-4 overflow-visible rounded-xl border border-[#ded8cc] bg-[#fffdf8] p-2 opacity-0 shadow-lg shadow-stone-950/10 transition duration-300 ease-out group-hover:visible group-hover:translate-y-3 group-hover:opacity-100 xl:w-80">
-                <div className="border-b border-[#ded8cc]/80 px-4 py-3">
-                  <p className="micro-copy text-[#70443d]">Select company</p>
-                </div>
-                <div className="py-2">
-                  {companies.length > 0 ? (
-                    companies.map((company) => {
-                      const companyLines = getCompanyLines(company)
-
-                      return (
-                        <div key={company.id} className="group/company relative">
-                          <Link
-                            to={`/products?company=${company.id}`}
-                            className="flex items-center justify-between gap-4 rounded-full px-4 py-3 text-sm font-semibold text-stone-700 transition hover:bg-[#f8f5ee] hover:text-stone-950 group-hover/company:bg-[#f8f5ee] group-hover/company:text-stone-950"
+              <div className="invisible absolute left-1/2 top-full z-10 w-[600px] -translate-x-1/2 translate-y-4 overflow-hidden rounded-[2rem] border border-[#ded8cc] bg-[#fffdf8] p-6 opacity-0 shadow-xl transition-all duration-300 ease-out group-hover:visible group-hover:translate-y-2 group-hover:opacity-100">
+                <div className="flex gap-8 h-[380px]">
+                  {/* Left Column: Companies (Tabs) */}
+                  <div className="w-1/2 flex flex-col border-r border-[#ded8cc]/60 pr-4 overflow-y-auto [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-stone-300/50 hover:[&::-webkit-scrollbar-thumb]:bg-[#b7774f]/50">
+                    <p className="micro-copy mb-4 text-[#70443d] font-bold uppercase tracking-wider pl-4">Companies</p>
+                    <div className="flex flex-col gap-2">
+                      {companies.length > 0 ? (
+                        companies.map((company) => (
+                          <div
+                            key={company.id}
+                            onMouseEnter={() => setActiveCompanyHover(company)}
+                            className="relative"
                           >
-                            <span>{company.name}</span>
-                            {companyLines.length > 0 ? (
-                              <span className="text-xs text-stone-500">&gt;</span>
-                            ) : null}
-                          </Link>
+                            <Link
+                              to={`/products?company=${company.id}`}
+                              className={`block rounded-2xl px-4 py-3 text-sm font-bold transition-all duration-300 ${activeCompanyHover?.id === company.id ? 'bg-[#f8f5ee] text-[#b7774f] shadow-sm' : 'text-stone-600 hover:bg-[#f8f5ee] hover:text-stone-950'}`}
+                            >
+                              {company.name}
+                            </Link>
+                            {/* Active Indicator Line */}
+                            {activeCompanyHover?.id === company.id && (
+                              <span className="absolute bottom-0 left-4 right-4 h-[3px] rounded-t-full bg-gradient-to-r from-[#b7774f] to-[#70443d]" />
+                            )}
+                          </div>
+                        ))
+                      ) : (
+                        <p className="px-4 py-2 text-sm text-stone-500">No companies</p>
+                      )}
+                    </div>
+                  </div>
 
-                          {companyLines.length > 0 ? (
-                            <>
-                              <span
-                                className="absolute left-full top-0 h-full w-3"
-                                aria-hidden="true"
-                              />
-                              <div className="invisible absolute left-full top-0 z-20 ml-3 w-52 translate-x-2 rounded-xl border border-[#ded8cc] bg-[#fffdf8] p-2 opacity-0 shadow-lg shadow-stone-950/10 transition duration-300 ease-out group-hover/company:visible group-hover/company:translate-x-0 group-hover/company:opacity-100 xl:w-60">
-                                <div className="border-b border-[#ded8cc]/80 px-4 py-3">
-                                  <p className="micro-copy text-[#70443d]">
-                                    Select line
-                                  </p>
-                                </div>
-                                <div className="py-2">
-                                  {companyLines.map((line) => (
-                                    <Link
-                                      key={line.id}
-                                      to={`/products?company=${company.id}&company_line=${line.id}`}
-                                      className="block rounded-full px-4 py-3 text-sm font-semibold text-stone-700 transition hover:bg-[#f8f5ee] hover:text-stone-950"
-                                    >
-                                      {line.name}
-                                    </Link>
-                                  ))}
-                                </div>
-                              </div>
-                            </>
-                          ) : null}
-                        </div>
-                      )
-                    })
-                  ) : (
-                    <p className="px-3 py-3 text-sm text-stone-500">
-                      No companies available
-                    </p>
-                  )}
+                  {/* Right Column: Lines */}
+                  <div className="w-1/2 flex flex-col pr-2 overflow-y-auto [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-stone-300/50 hover:[&::-webkit-scrollbar-thumb]:bg-[#b7774f]/50">
+                    <p className="micro-copy mb-4 text-[#70443d] font-bold uppercase tracking-wider pl-4">Product Lines</p>
+                    <div className="flex flex-col gap-1">
+                      {activeCompanyHover ? (
+                        getCompanyLines(activeCompanyHover).length > 0 ? (
+                          getCompanyLines(activeCompanyHover).map((line) => (
+                            <Link
+                              key={line.id}
+                              to={`/products?company=${activeCompanyHover.id}&company_line=${line.id}`}
+                              className="block rounded-xl px-4 py-2.5 text-sm font-semibold text-stone-600 transition hover:bg-[#f8f5ee] hover:text-stone-950"
+                            >
+                              {line.name}
+                            </Link>
+                          ))
+                        ) : (
+                          <p className="px-4 py-2 text-sm text-stone-400">No specific lines</p>
+                        )
+                      ) : (
+                        <p className="px-4 py-2 text-sm text-stone-400">Hover a company</p>
+                      )}
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>

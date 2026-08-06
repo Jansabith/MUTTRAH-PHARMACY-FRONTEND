@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { websiteAPI } from '../../services/api'
 import Loader from '../../components/Loader/Loader'
 import { motion } from 'framer-motion'
+import SEO from '../../components/SEO/SEO'
 
 const muttrahPharmacyMapUrl =
   'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3655.70020525746!2d58.542142999999996!3d23.615082400000002!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3e91f900164bdb5b%3A0x1c2403fc0d8bf5e1!2sMUTTRAH%20PHARMACY!5e1!3m2!1sen!2sin!4v1781096686549!5m2!1sen!2sin'
@@ -52,8 +53,31 @@ export default function Contact() {
     pageContent.google_maps_embed_url || muttrahPharmacyMapUrl
   ).replace('!5e0', '!5e1')
 
+  const contactSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'MedicalBusiness',
+    'name': 'Muttrah Pharmacy',
+    'image': 'https://muttrahpharmacy.com/favicon.svg',
+    'telephone': pageContent.phone || '+968 9979 3939',
+    'email': pageContent.email || 'info@muttrahpharmacy.com',
+    'address': {
+      '@type': 'PostalAddress',
+      'streetAddress': pageContent.address || 'Muttrah, Muscat',
+      'addressLocality': 'Muscat',
+      'addressRegion': 'Muttrah',
+      'postalCode': '114',
+      'addressCountry': 'OM'
+    }
+  }
+
   return (
     <section className="section-padding bg-[#fffdf8] min-h-screen">
+      <SEO
+        title={pageContent.meta_title || "Contact Us"}
+        description={pageContent.meta_description}
+        keywords={pageContent.meta_keywords}
+        schema={contactSchema}
+      />
       <div className="container-shell overflow-hidden">
         <motion.div 
           initial="hidden"

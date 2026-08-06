@@ -5,6 +5,7 @@ import ProductCard from '../../components/ProductCard/ProductCard'
 import ProductFilters from '../../components/ProductFilters/ProductFilters'
 import { categoriesAPI, companiesAPI, productsAPI } from '../../services/api'
 import { motion } from 'framer-motion'
+import SEO from '../../components/SEO/SEO'
 
 const fadeUpVariant = {
   hidden: { opacity: 0, y: 30 },
@@ -180,8 +181,20 @@ export default function Products() {
     setSearchParams(nextParams)
   }
 
+  const dynamicTitle = selectedCompanyData 
+    ? `${selectedCompanyData.name} Medical Catalog` 
+    : "Medical Product Catalog"
+  const dynamicDesc = selectedCompanyData 
+    ? `Explore medical supplies and products from ${selectedCompanyData.name} distributed by Muttrah Pharmacy in Oman.`
+    : "Browse our comprehensive wholesale catalog of pharmaceuticals, orthopedic implants, and rehabilitation equipment at Muttrah Pharmacy."
+
   return (
     <section className="section-padding bg-[#f8f5ee] min-h-screen">
+      <SEO 
+        title={dynamicTitle}
+        description={dynamicDesc}
+        keywords={selectedCompanyData ? `Muttrah Pharmacy, ${selectedCompanyData.name}, medicine Oman` : null}
+      />
       <div className="container-shell">
         <motion.div 
           initial="hidden"

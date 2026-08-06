@@ -1,14 +1,9 @@
 import { useState, useEffect } from 'react'
-
-const whatsappMessage =
-  'Hello Muttrah Pharmacy, I would like to know more about your products and services.'
-
-const whatsappUrl = `https://wa.me/96899793939?text=${encodeURIComponent(
-  whatsappMessage,
-)}`
+import useWhatsAppNumber from '../../hooks/useWhatsAppNumber'
 
 export default function WhatsAppButton() {
   const [showBubble, setShowBubble] = useState(false)
+  const whatsappNumber = useWhatsAppNumber()
 
   useEffect(() => {
     // Show the interactive pop-up message after 1.5 seconds
@@ -17,6 +12,9 @@ export default function WhatsAppButton() {
     }, 1500)
     return () => clearTimeout(timer)
   }, [])
+
+  const whatsappMessage = 'Hello Muttrah Pharmacy, I would like to know more about your products and services.'
+  const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(whatsappMessage)}`
 
   return (
     <div className="fixed bottom-20 right-6 z-[60] flex flex-col items-end gap-3 sm:bottom-8 sm:right-8">

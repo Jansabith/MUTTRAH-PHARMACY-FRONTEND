@@ -5,10 +5,6 @@ import { motion } from 'framer-motion'
 const whatsappMessage =
   'Hello Muttrah Pharmacy ,\n\nI would like to know more about your products and services. Please share the details and assist me with my requirements.\n\nThank you.'
 
-const whatsappUrl = `https://wa.me/96899793939?text=${encodeURIComponent(
-  whatsappMessage,
-)}`
-
 const staggerContainer = {
   hidden: { opacity: 0 },
   visible: {
@@ -27,12 +23,16 @@ const fadeUpVariant = {
 
 export default function HeroSection({ content }) {
   const [isVideoLoaded, setIsVideoLoaded] = useState(false)
+  
+  const whatsappUrl = `https://wa.me/${content.whatsapp_number || '96899793939'}?text=${encodeURIComponent(
+    whatsappMessage,
+  )}`
 
   return (
     <section className="relative isolate min-h-[calc(100svh-72px)] overflow-hidden border-b border-stone-900 bg-stone-950 text-[#fffdf8] sm:min-h-[calc(100svh-88px)]">
       <div className="pointer-events-none absolute inset-0 -z-10 bg-stone-950">
         <video
-          className={`h-full w-full object-cover transition-opacity duration-1000 ease-in-out ${isVideoLoaded ? 'opacity-70' : 'opacity-0'}`}
+          className={`h-full w-full object-cover object-top transition-opacity duration-1000 ease-in-out ${isVideoLoaded ? 'opacity-70' : 'opacity-0'}`}
           autoPlay
           muted
           loop
