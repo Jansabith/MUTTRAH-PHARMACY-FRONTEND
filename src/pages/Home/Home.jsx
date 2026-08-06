@@ -5,6 +5,7 @@ import Loader from '../../components/Loader/Loader'
 import useCatalogData from '../../hooks/useCatalogData'
 import { websiteAPI } from '../../services/api'
 import { motion } from 'framer-motion'
+import SEO from '../../components/SEO/SEO'
 
 const fadeUpVariant = {
   hidden: { opacity: 0, y: 30 },
@@ -60,8 +61,44 @@ export default function Home() {
     return <Loader label="Loading Muttrah Pharmacy..." />
   }
 
+  const localBusinessSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'MedicalBusiness',
+    'name': 'Muttrah Pharmacy',
+    'image': 'https://muttrahpharmacy.com/favicon.svg',
+    '@id': 'https://muttrahpharmacy.com/#organization',
+    'url': 'https://muttrahpharmacy.com',
+    'telephone': `+${pageContent.whatsapp_number || '96899793939'}`,
+    'priceRange': '$$',
+    'address': {
+      '@type': 'PostalAddress',
+      'streetAddress': 'Muttrah Street',
+      'addressLocality': 'Muscat',
+      'addressRegion': 'Muttrah',
+      'postalCode': '114',
+      'addressCountry': 'OM'
+    },
+    'geo': {
+      '@type': 'GeoCoordinates',
+      'latitude': 23.615082,
+      'longitude': 58.542143
+    },
+    'openingHoursSpecification': {
+      '@type': 'OpeningHoursSpecification',
+      'dayOfWeek': ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Sunday'],
+      'opens': '08:00',
+      'closes': '18:00'
+    }
+  }
+
   return (
     <div className="overflow-hidden">
+      <SEO
+        title={pageContent.meta_title}
+        description={pageContent.meta_description}
+        keywords={pageContent.meta_keywords}
+        schema={localBusinessSchema}
+      />
       <HeroSection content={pageContent} />
 
       {/* Intro & Features Section */}
