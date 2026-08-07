@@ -67,6 +67,18 @@ export default function Navbar() {
     }
   }, [open])
 
+  useEffect(() => {
+    if (open) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = ''
+    }
+    
+    return () => {
+      document.body.style.overflow = ''
+    }
+  }, [open])
+
   const linkClass = ({ isActive }) =>
     [
       'rounded-full px-4 py-2 text-[0.88rem] font-semibold uppercase text-stone-800 transition',
@@ -79,8 +91,9 @@ export default function Navbar() {
     (company.lines || []).filter((line) => line.is_active !== false)
 
   return (
-    <header className="sticky top-0 z-50 py-2 sm:py-3 pointer-events-none">
-      <div
+    <>
+      <header className="sticky top-0 z-50 py-2 sm:py-3 pointer-events-none">
+        <div
         className={[
           'transition-transform duration-300 ease-out motion-reduce:transition-none',
           hidden ? '-translate-y-[150%]' : 'translate-y-0',
@@ -213,51 +226,90 @@ export default function Navbar() {
           </button>
         </nav>
 
-        {open ? (
-          <div className="pointer-events-auto container-shell mt-2 max-h-[calc(100svh-5rem)] overflow-y-auto rounded-[1.5rem] border border-white/60 bg-[#fffdf8]/90 p-3 shadow-2xl shadow-stone-950/12 backdrop-blur-2xl ring-1 ring-[#ded8cc]/45 sm:rounded-[2rem] lg:hidden">
-            <div className="grid gap-1">
-              {navItems.map((item) => (
-                <NavLink
-                  key={item.to}
-                  to={item.to}
-                  className={linkClass}
-                  onClick={() => setOpen(false)}
-                >
-                  {item.label}
-                </NavLink>
-              ))}
-              <div className="my-2 border-t border-[#ded8cc]/80 pt-3">
-                <p className="micro-copy px-2 pb-2 text-[#70443d]">Companies</p>
+        </div>
+      </header>
+
+      {/* Mobile Drawer Overlay */}
+      <div
+        className={`fixed inset-0 z-[100] bg-stone-950/20 backdrop-blur-sm transition-opacity duration-300 lg:hidden pointer-events-auto ${
+          open ? 'opacity-100' : 'opacity-0 pointer-events-none'
+        }`}
+        onClick={() => setOpen(false)}
+        aria-hidden="true"
+      />
+
+      {/* Mobile Drawer Menu */}
+      <div
+        className={`fixed inset-y-0 left-0 z-[101] w-[85vw] max-w-sm bg-[#fffdf8] shadow-2xl transition-transform duration-300 ease-out lg:hidden flex flex-col pointer-events-auto border-r border-[#ded8cc] ${
+          open ? 'translate-x-0' : '-translate-x-full'
+        }`}
+      >
+        <div className="flex h-14 items-center justify-between px-5 sm:h-16 border-b border-[#ded8cc]">
+          <span className="display-serif text-xl font-bold text-stone-950">Menu</span>
+          <button
+            type="button"
+            className="grid h-10 w-10 place-items-center rounded-full bg-stone-200/50 text-stone-950 transition hover:bg-stone-300/50"
+            onClick={() => setOpen(false)}
+          >
+            <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
+        <div className="flex-1 overflow-y-auto p-5">
+          <div className="grid gap-2">
+            {navItems.map((item) => (
+              <NavLink
+                key={item.to}
+                to={item.to}
+                className={({ isActive }) =>
+                  `block rounded-2xl px-4 py-3 text-sm font-bold uppercase transition-colors ${
+                    isActive ? 'bg-[#f8f5ee] text-stone-950 shadow-sm border border-[#ded8cc]' : 'text-stone-700 hover:bg-stone-100'
+                  }`
+                }
+                onClick={() => setOpen(false)}
+              >
+                {item.label}
+              </NavLink>
+            ))}
+            <div className="my-4 border-t border-[#ded8cc] pt-5">
+              <p className="micro-copy px-2 pb-3 text-[#70443d] font-bold">Our Companies</p>
+              <div className="grid gap-1">
                 {companies.map((company) => {
                   const companyLines = getCompanyLines(company)
 
                   return (
-                    <div key={company.id}>
+                    <div key={company.id} className="mb-2">
                       <Link
                         to={`/products?company=${company.id}`}
-                        className="block rounded-full px-4 py-2 text-sm font-semibold text-stone-700 transition hover:bg-white/60"
+                        className="block rounded-xl px-4 py-2.5 text-sm font-bold text-stone-800 bg-stone-100/50 transition hover:bg-stone-200"
                         onClick={() => setOpen(false)}
                       >
                         {company.name}
                       </Link>
-                      {companyLines.map((line) => (
-                        <Link
-                          key={line.id}
-                          to={`/products?company=${company.id}&company_line=${line.id}`}
-                          className="ml-4 block rounded-full px-4 py-2 text-sm font-semibold text-stone-600 transition hover:bg-white/60"
-                          onClick={() => setOpen(false)}
-                        >
-                          {line.name}
-                        </Link>
-                      ))}
+                      {companyLines.length > 0 && (
+                        <div className="pl-4 mt-1 border-l-2 border-stone-200 ml-6 grid gap-1">
+                          {companyLines.map((line) => (
+                            <Link
+                              key={line.id}
+                              to={`/products?company=${company.id}&company_line=${line.id}`}
+                              className="block rounded-lg px-4 py-2 text-xs font-semibold text-stone-600 transition hover:bg-stone-100"
+                              onClick={() => setOpen(false)}
+                            >
+                              {line.name}
+                            </Link>
+                          ))}
+                        </div>
+                      )}
                     </div>
                   )
                 })}
               </div>
             </div>
           </div>
-        ) : null}
+        </div>
       </div>
-    </header>
+    </>
   )
 }

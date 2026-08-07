@@ -17,7 +17,7 @@ export default function WhatsAppButton() {
   const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(whatsappMessage)}`
 
   return (
-    <div className="fixed bottom-20 right-6 z-[60] flex flex-col items-end gap-3 sm:bottom-8 sm:right-8">
+    <div className="fixed bottom-6 right-6 z-[60] flex flex-col items-end gap-3 sm:bottom-8 sm:right-8 pointer-events-none">
       {/* Premium Glassmorphic Notification Bubble */}
       <div
         className={`glass-panel flex w-[280px] items-start gap-3 rounded-2xl p-4 shadow-xl transition-all duration-500 ease-out sm:w-[320px] ${
@@ -90,7 +90,7 @@ export default function WhatsAppButton() {
         rel="noreferrer"
         aria-label="Chat with Muttrah Pharmacy on WhatsApp"
         onClick={() => setShowBubble(false)}
-        className="group relative flex h-14 w-14 items-center justify-center rounded-full bg-[#25d366] text-white shadow-xl transition-all duration-300 hover:scale-105 hover:bg-[#1ebe5d] focus:outline-none focus:ring-4 focus:ring-emerald-500/20"
+        className="group relative flex h-14 w-14 items-center justify-center rounded-full bg-[#25d366] text-white shadow-xl transition-all duration-300 hover:scale-105 hover:bg-[#1ebe5d] focus:outline-none focus:ring-4 focus:ring-emerald-500/20 pointer-events-auto"
       >
         {/* Pulsing outer ring */}
         <span className="absolute -top-0.5 -right-0.5 flex h-4 w-4">

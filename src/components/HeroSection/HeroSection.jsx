@@ -66,10 +66,10 @@ export default function HeroSection({ content }) {
           <motion.p variants={fadeUpVariant} className="mt-5 max-w-2xl text-base leading-7 text-stone-200 sm:text-lg">
             {content.hero_description}
           </motion.p>
-          <motion.div variants={fadeUpVariant} className="mt-7 flex flex-wrap gap-3">
+          <motion.div variants={fadeUpVariant} className="mt-8 flex flex-col sm:flex-row gap-4 relative z-[100] pointer-events-auto">
             <Link
               to="/products"
-              className="inline-flex w-full items-center justify-center rounded-full border border-[#fffdf8] bg-[#fffdf8] px-5 py-3 text-xs font-bold uppercase text-stone-950 transition hover:scale-105 active:scale-95 sm:w-auto"
+              className="block w-full cursor-pointer text-center rounded-full border border-[#fffdf8] bg-[#fffdf8] px-6 py-4 text-[13px] font-bold uppercase tracking-wider text-stone-950 active:bg-stone-200 transition-colors sm:w-auto sm:px-8 sm:py-3.5"
             >
               {content.primary_button_label}
             </Link>
@@ -77,7 +77,7 @@ export default function HeroSection({ content }) {
               href={whatsappUrl}
               target="_blank"
               rel="noreferrer"
-              className="inline-flex w-full items-center justify-center rounded-full border border-white/35 bg-white/10 px-5 py-3 text-xs font-bold uppercase text-[#fffdf8] backdrop-blur transition hover:bg-white/20 hover:scale-105 active:scale-95 sm:w-auto"
+              className="block w-full cursor-pointer text-center rounded-full border border-white/35 bg-white/10 px-6 py-4 text-[13px] font-bold uppercase tracking-wider text-[#fffdf8] backdrop-blur active:bg-white/20 transition-colors sm:w-auto sm:px-8 sm:py-3.5"
             >
               {content.secondary_button_label}
             </a>
