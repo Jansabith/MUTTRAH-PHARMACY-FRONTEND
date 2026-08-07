@@ -1,10 +1,12 @@
+import React, { Suspense } from 'react'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import MainLayout from '../layouts/MainLayout'
-import About from '../pages/About/About'
-import Contact from '../pages/Contact/Contact'
-import Home from '../pages/Home/Home'
-import ProductDetail from '../pages/ProductDetail/ProductDetail'
-import Products from '../pages/Products/Products'
+const About = React.lazy(() => import('../pages/About/About'))
+const Contact = React.lazy(() => import('../pages/Contact/Contact'))
+const Home = React.lazy(() => import('../pages/Home/Home'))
+const ProductDetail = React.lazy(() => import('../pages/ProductDetail/ProductDetail'))
+const Products = React.lazy(() => import('../pages/Products/Products'))
+import Loader from '../components/Loader/Loader'
 import ScrollToTop from '../components/ScrollToTop/ScrollToTop'
 
 export default function AppRoutes() {
@@ -13,11 +15,31 @@ export default function AppRoutes() {
       <ScrollToTop />
       <Routes>
         <Route element={<MainLayout />}>
-          <Route index element={<Home />} />
-          <Route path="/products" element={<Products />} />
-          <Route path="/products/:slug" element={<ProductDetail />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/contact" element={<Contact />} />
+          <Route index element={
+            <Suspense fallback={<Loader />}>
+              <Home />
+            </Suspense>
+          } />
+          <Route path="/products" element={
+            <Suspense fallback={<Loader />}>
+              <Products />
+            </Suspense>
+          } />
+          <Route path="/products/:slug" element={
+            <Suspense fallback={<Loader />}>
+              <ProductDetail />
+            </Suspense>
+          } />
+          <Route path="/about" element={
+            <Suspense fallback={<Loader />}>
+              <About />
+            </Suspense>
+          } />
+          <Route path="/contact" element={
+            <Suspense fallback={<Loader />}>
+              <Contact />
+            </Suspense>
+          } />
         </Route>
       </Routes>
     </BrowserRouter>

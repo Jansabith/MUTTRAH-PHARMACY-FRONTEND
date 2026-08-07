@@ -217,7 +217,7 @@ export default function Products() {
             transition={{ duration: 0.6 }}
           >
             {loadingCompanies ? (
-              <Loader label="Loading catalog filters" />
+              <Loader type="filters" />
             ) : (
               <ProductFilters
                 companies={companies}
@@ -250,15 +250,6 @@ export default function Products() {
                   ? `Showing ${filteredProducts.length} products`
                   : 'Choose a company, line, or category to view products'}
               </p>
-              <p className="break-words text-xs font-bold uppercase text-[#70443d] sm:text-right">
-                {selectedCompanyLine
-                  ? `API: /products/?company=${selectedCompany}&company_line=${selectedCompanyLine}`
-                  : selectedCompany
-                    ? `API: /products/?company=${selectedCompany}`
-                    : selectedCategory
-                      ? `API: /products/?category=${selectedCategory}`
-                      : 'Live filters'}
-              </p>
             </motion.div>
 
             {error ? (
@@ -267,7 +258,7 @@ export default function Products() {
               </motion.div>
             ) : null}
 
-            {loadingProducts ? <Loader label="Loading products" /> : null}
+            {loadingProducts ? <Loader type="cards" /> : null}
 
             {!hasActiveFilter && !loadingProducts && !error ? (
               <motion.div variants={fadeUpVariant} className="rounded-3xl border border-dashed border-[#b7774f] bg-[#fffdf8] p-8 text-center sm:p-12 shadow-sm">

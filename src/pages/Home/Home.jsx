@@ -176,7 +176,7 @@ export default function Home() {
             </Link>
           </motion.div>
 
-          {loading ? <Loader /> : null}
+          {loading ? <Loader type="cards" /> : null}
           {error ? (
             <div className="border border-[#70443d]/30 bg-[#fffdf8] p-5 text-sm font-semibold text-[#70443d] rounded-2xl">
               {error}

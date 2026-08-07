@@ -17,6 +17,18 @@ export const normalizeList = (payload) => {
   return []
 }
 
+const apiCache = new Map();
+
+const fetchWithCache = async (url, params = {}) => {
+  const key = `${url}?${new URLSearchParams(params).toString()}`;
+  if (apiCache.has(key)) {
+    return apiCache.get(key);
+  }
+  const { data } = await apiClient.get(url, { params });
+  apiCache.set(key, data);
+  return data;
+};
+
 export const apiOrigin = (() => {
   try {
     return new URL(API_BASE_URL).origin
@@ -77,13 +89,12 @@ export const productsAPI = {
 
 export const companiesAPI = {
   async getAll() {
-    const { data } = await apiClient.get('/companies/')
+    const data = await fetchWithCache('/companies/')
     return normalizeList(data)
   },
 
   async getById(id) {
-    const { data } = await apiClient.get(`/companies/${id}/`)
-    return data
+    return fetchWithCache(`/companies/${id}/`)
   },
 }
 
@@ -113,23 +124,19 @@ export const contactAPI = {
 
 export const websiteAPI = {
   async getHome() {
-    const { data } = await apiClient.get('/website/home/')
-    return data
+    return fetchWithCache('/website/home/')
   },
 
   async getAbout() {
-    const { data } = await apiClient.get('/website/about/')
-    return data
+    return fetchWithCache('/website/about/')
   },
 
   async getContact() {
-    const { data } = await apiClient.get('/website/contact/')
-    return data
+    return fetchWithCache('/website/contact/')
   },
 
   async getFooter() {
-    const { data } = await apiClient.get('/website/footer/')
-    return data
+    return fetchWithCache('/website/footer/')
   },
 }
 
