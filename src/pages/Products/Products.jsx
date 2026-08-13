@@ -31,10 +31,23 @@ export default function Products() {
   const selectedCompanyLine = searchParams.get('company_line') || ''
   const selectedCategory = searchParams.get('category') || ''
   const [search, setSearch] = useState('')
+  const [debouncedSearch, setDebouncedSearch] = useState('')
+  const [page, setPage] = useState(1)
+  const [hasMore, setHasMore] = useState(false)
+  const [totalProducts, setTotalProducts] = useState(0)
+
   const [loadingProducts, setLoadingProducts] = useState(false)
   const [loadingCompanies, setLoadingCompanies] = useState(true)
   const [loadingCategories, setLoadingCategories] = useState(false)
   const [error, setError] = useState('')
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedSearch(search)
+      setPage(1)
+    }, 500)
+    return () => clearTimeout(handler)
+  }, [search])
   const hasActiveFilter = Boolean(
     selectedCompany || selectedCompanyLine || selectedCategory,
   )
@@ -106,22 +119,25 @@ export default function Products() {
     let active = true
 
     async function loadProducts() {
-      if (!hasActiveFilter) {
-        setProducts([])
-        setLoadingProducts(false)
-        setError('')
-        return
-      }
-
       try {
-        setLoadingProducts(true)
+        if (page === 1) setLoadingProducts(true)
         setError('')
-        const productList = await productsAPI.getAll({
+        const response = await productsAPI.getAll({
           company: selectedCompany,
           companyLine: selectedCompanyLine,
           category: selectedCategory,
+          search: debouncedSearch,
+          page: page
         })
-        if (active) setProducts(productList)
+        if (active) {
+          if (page === 1) {
+            setProducts(response.results)
+          } else {
+            setProducts(prev => [...prev, ...response.results])
+          }
+          setHasMore(!!response.next)
+          setTotalProducts(response.count)
+        }
       } catch {
         if (active) setError('Unable to load products from the Django API.')
       } finally {
@@ -134,31 +150,14 @@ export default function Products() {
     return () => {
       active = false
     }
-  }, [hasActiveFilter, selectedCategory, selectedCompany, selectedCompanyLine])
+  }, [selectedCategory, selectedCompany, selectedCompanyLine, debouncedSearch, page])
 
-  const filteredProducts = useMemo(() => {
-    const term = search.trim().toLowerCase()
-    if (!term) return products
-
-    return products.filter((product) => {
-      const haystack = [
-        product.name,
-        product.description,
-        product.company_name,
-        product.company_line_name,
-        product.category_name,
-      ]
-        .filter(Boolean)
-        .join(' ')
-        .toLowerCase()
-
-      return haystack.includes(term)
-    })
-  }, [products, search])
+  // Frontend filtering logic has been moved to backend search
 
   const clearFilters = () => {
     setSearchParams({})
     setSearch('')
+    setPage(1)
   }
 
   const updateCatalogParam = (key, value) => {
@@ -179,6 +178,7 @@ export default function Products() {
       nextParams.delete(key)
     }
     setSearchParams(nextParams)
+    setPage(1)
   }
 
   const dynamicTitle = selectedCompanyData 
@@ -246,9 +246,7 @@ export default function Products() {
           >
             <motion.div variants={fadeUpVariant} className="mb-5 flex flex-col gap-2 rounded-2xl border border-[#ded8cc] bg-[#fffdf8] p-5 shadow-sm sm:flex-row sm:items-center sm:justify-between">
               <p className="text-sm font-semibold text-stone-700">
-                {hasActiveFilter
-                  ? `Showing ${filteredProducts.length} products`
-                  : 'Choose a company, line, or category to view products'}
+                Showing {products.length} {totalProducts > products.length ? `(of ${totalProducts})` : ''} products
               </p>
             </motion.div>
 
@@ -258,21 +256,9 @@ export default function Products() {
               </motion.div>
             ) : null}
 
-            {loadingProducts ? <Loader type="cards" /> : null}
+            {loadingProducts && page === 1 ? <Loader type="cards" /> : null}
 
-            {!hasActiveFilter && !loadingProducts && !error ? (
-              <motion.div variants={fadeUpVariant} className="rounded-3xl border border-dashed border-[#b7774f] bg-[#fffdf8] p-8 text-center sm:p-12 shadow-sm">
-                <h2 className="display-serif text-4xl leading-none text-stone-950 sm:text-5xl">
-                  Select a company first
-                </h2>
-                <p className="mx-auto mt-4 max-w-md text-stone-600">
-                  Use the company filter, company line, or Products menu to load
-                  your live product list.
-                </p>
-              </motion.div>
-            ) : null}
-
-            {hasActiveFilter && !loadingProducts && !error && filteredProducts.length === 0 ? (
+            {!loadingProducts && !error && products.length === 0 ? (
               <motion.div variants={fadeUpVariant} className="rounded-3xl border border-dashed border-[#ded8cc] bg-[#fffdf8] p-8 text-center sm:p-12 shadow-sm">
                 <h2 className="display-serif text-4xl leading-none text-stone-950 sm:text-5xl">
                   No products found
@@ -283,12 +269,26 @@ export default function Products() {
               </motion.div>
             ) : null}
 
-            {hasActiveFilter && !loadingProducts && !error && filteredProducts.length > 0 ? (
-              <motion.div variants={staggerContainer} className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
-                {filteredProducts.map((product) => (
-                  <ProductCard key={product.id} product={product} />
-                ))}
-              </motion.div>
+            {!error && products.length > 0 ? (
+              <>
+                <motion.div variants={staggerContainer} className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
+                  {products.map((product) => (
+                    <ProductCard key={product.id} product={product} />
+                  ))}
+                </motion.div>
+
+                {hasMore && (
+                  <div className="mt-12 flex justify-center">
+                    <button 
+                      onClick={() => setPage(p => p + 1)}
+                      disabled={loadingProducts}
+                      className="rounded-full border border-stone-950 bg-stone-950 px-8 py-4 text-xs font-bold uppercase text-[#fffdf8] transition-all hover:bg-stone-800 disabled:opacity-50"
+                    >
+                      {loadingProducts ? 'Loading...' : 'Load More Products'}
+                    </button>
+                  </div>
+                )}
+              </>
             ) : null}
           </motion.div>
         </div>

@@ -76,9 +76,15 @@ export const productsAPI = {
     if (filters.company) params.company = filters.company
     if (filters.companyLine) params.company_line = filters.companyLine
     if (filters.category) params.category = filters.category
+    if (filters.page) params.page = filters.page
+    if (filters.search) params.search = filters.search
 
     const { data } = await apiClient.get('/products/', { params })
-    return normalizeList(data)
+    return {
+      results: normalizeList(data),
+      next: data.next,
+      count: data.count
+    }
   },
 
   async getBySlug(slug) {
