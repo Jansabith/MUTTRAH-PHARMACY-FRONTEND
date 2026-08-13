@@ -69,7 +69,7 @@ export default function About() {
       />
       {/* Hero Section */}
       <section className="section-padding border-b border-[#ded8cc] bg-[#fffdf8]">
-        <div className="container-shell grid gap-10 lg:grid-cols-[0.95fr_1.05fr]">
+        <div className="container-shell flex flex-col items-center text-center gap-10">
           <motion.div
             initial="hidden"
             whileInView="visible"
@@ -77,17 +77,17 @@ export default function About() {
             variants={fadeUpVariant}
           >
             <p className="micro-copy text-[#70443d]">{pageContent.eyebrow}</p>
-            <h1 className="display-serif page-title mt-5 text-stone-950">
+            <h1 className="display-serif page-title mt-5 text-stone-950 max-w-4xl mx-auto">
               {pageContent.title}
             </h1>
           </motion.div>
           
           <motion.div 
-            initial={{ opacity: 0, x: 30 }}
-            whileInView={{ opacity: 1, x: 0 }}
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-100px" }}
             transition={{ duration: 0.7, ease: "easeOut" }}
-            className="flex flex-col justify-end gap-6 sm:gap-8 pt-6 lg:pt-0"
+            className="flex w-full max-w-5xl flex-col items-center gap-6 sm:gap-8 pt-2"
           >
             {pageContent.hero_images?.length > 0 && (
               <div className="relative aspect-[4/3] w-full overflow-hidden rounded-3xl shadow-lg border border-[#ded8cc] bg-[#f8f5ee]">
@@ -118,7 +118,7 @@ export default function About() {
                 )}
               </div>
             )}
-            <p className="max-w-2xl text-base leading-7 text-stone-600 sm:text-xl sm:leading-9">
+            <p className="max-w-3xl text-base leading-7 text-stone-600 sm:text-xl sm:leading-9 mx-auto">
               {pageContent.overview}
             </p>
           </motion.div>
@@ -191,7 +191,7 @@ export default function About() {
 
       {/* Brands Section */}
       <section className="section-padding bg-[#fffdf8]">
-        <div className="container-shell grid gap-10 lg:grid-cols-[0.85fr_1.15fr]">
+        <div className="container-shell flex flex-col items-center text-center gap-10">
           <motion.div
             initial="hidden"
             whileInView="visible"
@@ -201,11 +201,11 @@ export default function About() {
             <p className="micro-copy text-[#70443d]">
               {pageContent.brands_eyebrow}
             </p>
-            <h2 className="display-serif section-title mt-5 text-stone-950">
+            <h2 className="display-serif section-title mt-5 text-stone-950 max-w-3xl mx-auto">
               {pageContent.brands_title}
             </h2>
           </motion.div>
-          <div>
+          <div className="w-full">
             {loading ? <Loader label="Loading represented brands" /> : null}
             {!loading ? (
               <motion.div 
@@ -213,7 +213,7 @@ export default function About() {
                 whileInView="visible"
                 viewport={{ once: true, margin: "-100px" }}
                 variants={staggerContainer}
-                className="grid gap-4 sm:grid-cols-2"
+                className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4"
               >
                 {companies.slice(0, 8).map((company) => (
                   <motion.article 
@@ -238,7 +238,7 @@ export default function About() {
 
       {/* Location Section */}
       <section className="section-padding bg-[#f8f5ee] border-t border-[#ded8cc]">
-        <div className="container-shell grid gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:items-center">
+        <div className="container-shell flex flex-col items-center text-center gap-10">
           <motion.div
             initial="hidden"
             whileInView="visible"
@@ -248,10 +248,10 @@ export default function About() {
             <p className="micro-copy text-[#70443d]">
               {pageContent.location_eyebrow || 'Our Location'}
             </p>
-            <h2 className="display-serif section-title mt-5 text-stone-950">
+            <h2 className="display-serif section-title mt-5 text-stone-950 max-w-3xl mx-auto">
               {pageContent.location_title || 'Visit Us in Muttrah'}
             </h2>
-            <p className="mt-4 max-w-sm text-sm leading-6 text-stone-600">
+            <p className="mt-4 max-w-2xl mx-auto text-sm leading-6 text-stone-600">
               {pageContent.location_description ||
                 'Our headquarters and main distribution center are strategically located to serve the healthcare community efficiently.'}
             </p>
@@ -261,6 +261,7 @@ export default function About() {
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true, margin: "-100px" }}
             transition={{ duration: 0.6, ease: "easeOut" }}
+            className="w-full max-w-5xl"
           >
             <iframe
               className="h-[22rem] w-full rounded-3xl shadow-lg border border-[#ded8cc] bg-[#f8f5ee] sm:h-[26rem] lg:h-[30rem]"

@@ -128,8 +128,8 @@ export default function ProductDetail() {
         image={getMediaUrl(product.image)}
         schema={productSchema}
       />
-      <section className="border-b border-[#ded8cc] bg-[#fffdf8] pb-6 pt-2 sm:pb-8 sm:pt-3 lg:pb-6 lg:pt-3">
-        <div className="container-shell max-w-[96rem]">
+      <main className="border-b border-[#ded8cc] bg-[#fffdf8] pb-6 pt-2 sm:pb-8 sm:pt-3 lg:pb-6 lg:pt-3">
+        <article className="container-shell max-w-[96rem]">
           <Link
             to="/products"
             className="mb-3 inline-flex rounded-full border border-[#ded8cc] px-4 py-2 text-xs font-bold uppercase text-stone-700 transition hover:border-stone-950 hover:text-stone-950"
@@ -268,8 +268,8 @@ export default function ProductDetail() {
               </div>
             </div>
           </div>
-        </div>
-      </section>
+        </article>
+      </main>
 
       <section className="bg-[#f8f5ee] py-10 sm:py-12 lg:py-14">
         <div className="container-shell max-w-7xl">

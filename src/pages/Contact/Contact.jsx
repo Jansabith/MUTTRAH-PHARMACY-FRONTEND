@@ -83,15 +83,15 @@ export default function Contact() {
           initial="hidden"
           animate="visible"
           variants={fadeUpVariant}
-          className="mb-12 grid gap-6 border-b border-[#ded8cc] pb-10 lg:grid-cols-[1fr_0.8fr] lg:items-end"
+          className="mb-12 flex flex-col items-center text-center gap-6 border-b border-[#ded8cc] pb-10"
         >
           <div>
             <p className="micro-copy text-[#70443d]">{pageContent.eyebrow}</p>
-            <h1 className="display-serif page-title mt-4 text-stone-950">
+            <h1 className="display-serif page-title mt-4 text-stone-950 max-w-4xl mx-auto">
               {pageContent.title}
             </h1>
           </div>
-          <p className="max-w-xl text-base leading-7 text-stone-600 lg:justify-self-end lg:text-right">
+          <p className="max-w-2xl text-base leading-7 text-stone-600 mx-auto">
             {pageContent.description}
           </p>
         </motion.div>
