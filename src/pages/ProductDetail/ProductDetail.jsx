@@ -36,7 +36,7 @@ export default function ProductDetail() {
         if (active) {
           setProduct(productData)
           setRelatedProducts(
-            related.filter((item) => String(item.slug) !== String(slug)).slice(0, 3),
+            (related.results || []).filter((item) => String(item.slug) !== String(slug)).slice(0, 3),
           )
           setActiveImage(getMediaUrl(productData.image))
         }
