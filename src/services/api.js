@@ -31,9 +31,9 @@ const fetchWithCache = async (url, params = {}) => {
 
 export const apiOrigin = (() => {
   try {
-    return new URL(API_BASE_URL).origin
+    return new URL(API_BASE_URL, window.location.origin).origin
   } catch {
-    return 'http://127.0.0.1:8000'
+    return window.location.origin
   }
 })()
 
@@ -117,13 +117,6 @@ export const categoriesAPI = {
 
   async getById(id) {
     const { data } = await apiClient.get(`/categories/${id}/`)
-    return data
-  },
-}
-
-export const contactAPI = {
-  async submit(payload) {
-    const { data } = await apiClient.post('/contact/', payload)
     return data
   },
 }
