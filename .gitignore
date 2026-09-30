@@ -12,6 +12,11 @@ dist
 dist-ssr
 *.local
 
+# Environment settings differ per machine (local vs live server)
+.env
+.env.*
+!.env.example
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
