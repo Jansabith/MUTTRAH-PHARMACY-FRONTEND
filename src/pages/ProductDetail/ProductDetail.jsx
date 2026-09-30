@@ -9,7 +9,20 @@ import {
   productsAPI,
 } from '../../services/api'
 import SEO from '../../components/SEO/SEO'
+import ShareButton from '../../components/ShareButton/ShareButton'
+import { trackEvent } from '../../services/analytics'
 import useWhatsAppNumber from '../../hooks/useWhatsAppNumber'
+
+const VIDEO_KEY = '__youtube_video__'
+
+// Accepts youtube.com/watch?v=, youtu.be/, /shorts/, /embed/ and /live/ links
+function getYouTubeId(url) {
+  if (!url) return ''
+  const match = url.match(
+    /(?:youtube\.com\/(?:watch\?(?:.*&)?v=|embed\/|shorts\/|live\/|v\/)|youtu\.be\/)([A-Za-z0-9_-]{11})/,
+  )
+  return match ? match[1] : ''
+}
 
 export default function ProductDetail() {
   const { slug } = useParams()
@@ -59,6 +72,9 @@ export default function ProductDetail() {
     const images = [getMediaUrl(product.image), ...getGalleryImages(product)]
     return [...new Set(images.filter(Boolean))]
   }, [product])
+
+  const youtubeId = getYouTubeId(product?.youtube_url)
+  const showingVideo = Boolean(youtubeId) && activeImage === VIDEO_KEY
 
   const sizes = getProductSizes(product)
 
@@ -139,12 +155,20 @@ export default function ProductDetail() {
 
           <div className="grid items-start gap-5 lg:grid-cols-[0.72fr_1.28fr] lg:gap-7">
             <div>
-              <div className="product-image-fallback aspect-[4/3] max-h-[24rem] overflow-hidden border border-[#ded8cc] bg-[#f8f5ee] lg:aspect-[5/4]">
-                {activeImage ? (
+              <div className="aspect-[4/3] max-h-[24rem] overflow-hidden lg:aspect-[5/4]">
+                {showingVideo ? (
+                  <iframe
+                    className="h-full w-full bg-black"
+                    src={`https://www.youtube-nocookie.com/embed/${youtubeId}?autoplay=1&rel=0`}
+                    title={`${product.name} video`}
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                  />
+                ) : activeImage ? (
                   <img
                     src={activeImage}
                     alt={product.name}
-                    className="h-full w-full object-contain p-3 sm:p-4"
+                    className="h-full w-full object-contain mix-blend-multiply"
                   />
                 ) : (
                   <div className="flex h-full items-center justify-center p-6 text-center">
@@ -160,7 +184,7 @@ export default function ProductDetail() {
                 )}
               </div>
 
-              {galleryImages.length > 0 ? (
+              {galleryImages.length > 1 || youtubeId ? (
                 <div className="mt-2 flex flex-wrap gap-2">
                   {galleryImages.map((image) => (
                     <button
@@ -181,6 +205,32 @@ export default function ProductDetail() {
                       />
                     </button>
                   ))}
+                  {youtubeId ? (
+                    <button
+                      type="button"
+                      onClick={() => setActiveImage(VIDEO_KEY)}
+                      aria-label={`Play ${product.name} video`}
+                      className={[
+                        'relative h-18 w-18 overflow-hidden border bg-black transition sm:h-20 sm:w-20 lg:h-24 lg:w-24',
+                        showingVideo
+                          ? 'border-[#70443d] ring-4 ring-[#b7774f]/15'
+                          : 'border-[#ded8cc] hover:border-stone-950',
+                      ].join(' ')}
+                    >
+                      <img
+                        src={`https://img.youtube.com/vi/${youtubeId}/mqdefault.jpg`}
+                        alt=""
+                        className="h-full w-full object-cover opacity-80"
+                      />
+                      <span className="absolute inset-0 flex items-center justify-center">
+                        <span className="flex h-8 w-8 items-center justify-center rounded-full bg-red-600 text-white shadow-lg">
+                          <svg className="ml-0.5 h-4 w-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M8 5v14l11-7z" />
+                          </svg>
+                        </span>
+                      </span>
+                    </button>
+                  ) : null}
                 </div>
               ) : null}
             </div>
@@ -250,6 +300,9 @@ export default function ProductDetail() {
                   href={`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(`Hello,\n\nI am interested in purchasing the product: ${product.name}.\n\nPlease share the price, availability, and payment details.\n\nThank you.`)}`}
                   target="_blank"
                   rel="noopener noreferrer"
+                  onClick={() =>
+                    trackEvent('whatsapp_click', { location: 'buy_now', product_name: product.name })
+                  }
                   className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-[#25D366] bg-[#25D366] px-5 py-2.5 text-xs font-bold uppercase text-white transition hover:border-[#128C7E] hover:bg-[#128C7E] sm:w-auto"
                 >
                   <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -261,10 +314,14 @@ export default function ProductDetail() {
                   href={`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(`Hello,\n\nI would like to know more about ${product.name}.`)}`}
                   target="_blank"
                   rel="noopener noreferrer"
+                  onClick={() =>
+                    trackEvent('whatsapp_click', { location: 'request_info', product_name: product.name })
+                  }
                   className="inline-flex w-full items-center justify-center rounded-full border border-stone-950 bg-stone-950 px-5 py-2.5 text-xs font-bold uppercase text-[#fffdf8] transition hover:border-[#70443d] hover:bg-[#70443d] sm:w-auto"
                 >
                   Request Product Information
                 </a>
+                <ShareButton product={product} className="w-full sm:w-auto" />
               </div>
             </div>
           </div>

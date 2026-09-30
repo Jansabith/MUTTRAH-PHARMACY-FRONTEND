@@ -1,95 +1,21 @@
-import { useState, useEffect } from 'react'
 import useWhatsAppNumber from '../../hooks/useWhatsAppNumber'
+import { trackEvent } from '../../services/analytics'
 
 export default function WhatsAppButton() {
-  const [showBubble, setShowBubble] = useState(false)
   const whatsappNumber = useWhatsAppNumber()
-
-  useEffect(() => {
-    // Show the interactive pop-up message after 1.5 seconds
-    const timer = setTimeout(() => {
-      setShowBubble(true)
-    }, 1500)
-    return () => clearTimeout(timer)
-  }, [])
 
   const whatsappMessage = 'Hello Muttrah Pharmacy, I would like to know more about your products and services.'
   const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(whatsappMessage)}`
 
   return (
     <div className="fixed bottom-6 right-6 z-[60] flex flex-col items-end gap-3 sm:bottom-8 sm:right-8 pointer-events-none">
-      {/* Premium Glassmorphic Notification Bubble */}
-      <div
-        className={`glass-panel flex w-[280px] items-start gap-3 rounded-2xl p-4 shadow-xl transition-all duration-500 ease-out sm:w-[320px] ${
-          showBubble
-            ? 'translate-y-0 opacity-100 scale-100 pointer-events-auto'
-            : 'translate-y-4 opacity-0 scale-95 pointer-events-none'
-        }`}
-      >
-        {/* Pulsing online status indicator with placeholder avatar */}
-        <div className="relative flex-shrink-0">
-          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--line)] text-[var(--ink)]">
-            <svg
-              className="h-5 w-5"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
-              />
-            </svg>
-          </div>
-          <span className="absolute bottom-0 right-0 flex h-3 w-3">
-            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75"></span>
-            <span className="relative inline-flex h-3 w-3 rounded-full bg-emerald-500 border-2 border-[var(--paper)]"></span>
-          </span>
-        </div>
-
-        {/* Content Details */}
-        <div className="flex-1 pr-3">
-          <div className="flex items-center gap-1.5">
-            <span className="micro-copy !text-[10px] text-[var(--muted)] font-semibold">Live Chat Support</span>
-          </div>
-          <p className="mt-1 text-sm font-medium text-[var(--ink)] leading-snug">
-            We are online and ready to help. Chat with us now!
-          </p>
-          <a
-            href={whatsappUrl}
-            target="_blank"
-            rel="noreferrer"
-            onClick={() => setShowBubble(false)}
-            className="mt-2.5 inline-flex items-center gap-1 text-xs font-bold text-emerald-600 hover:text-emerald-700 transition-colors"
-          >
-            Start Chat
-            <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
-            </svg>
-          </a>
-        </div>
-
-        {/* Close Button */}
-        <button
-          onClick={() => setShowBubble(false)}
-          className="text-[var(--muted)] hover:text-[var(--ink)] transition-colors p-0.5"
-          aria-label="Close notification"
-        >
-          <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-          </svg>
-        </button>
-      </div>
-
       {/* Main Trigger Button */}
       <a
         href={whatsappUrl}
         target="_blank"
         rel="noreferrer"
         aria-label="Chat with Muttrah Pharmacy on WhatsApp"
-        onClick={() => setShowBubble(false)}
+        onClick={() => trackEvent('whatsapp_click', { location: 'floating_button' })}
         className="group relative flex h-14 w-14 items-center justify-center rounded-full bg-[#25d366] text-white shadow-xl transition-all duration-300 hover:scale-105 hover:bg-[#1ebe5d] focus:outline-none focus:ring-4 focus:ring-emerald-500/20 pointer-events-auto"
       >
         {/* Pulsing outer ring */}
@@ -109,4 +35,3 @@ export default function WhatsAppButton() {
     </div>
   )
 }
-

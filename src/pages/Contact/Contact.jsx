@@ -87,11 +87,9 @@ export default function Contact() {
         >
           <div>
             <p className="micro-copy text-[#70443d]">{pageContent.eyebrow}</p>
-            <h1 className="display-serif page-title mt-4 text-stone-950 max-w-4xl mx-auto">
-              {pageContent.title}
-            </h1>
+            <h1 className="sr-only">{pageContent.meta_title || 'Contact Us'}</h1>
           </div>
-          <p className="max-w-2xl text-base leading-7 text-stone-600 mx-auto">
+          <p className="max-w-3xl text-xl font-semibold leading-8 text-stone-800 mx-auto sm:text-2xl sm:leading-9 lg:text-3xl lg:leading-snug">
             {pageContent.description}
           </p>
         </motion.div>
