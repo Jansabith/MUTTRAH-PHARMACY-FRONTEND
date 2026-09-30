@@ -1,6 +1,9 @@
 import { Link } from 'react-router-dom'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { motion } from 'framer-motion'
+import { HeroSlides } from './HeroSlider'
+import { useHeroSlider } from './useHeroSlider'
+import { trackEvent } from '../../services/analytics'
 
 const whatsappMessage =
   'Hello Muttrah Pharmacy ,\n\nI would like to know more about your products and services. Please share the details and assist me with my requirements.\n\nThank you.'
@@ -23,7 +26,13 @@ const fadeUpVariant = {
 
 export default function HeroSection({ content }) {
   const [isVideoLoaded, setIsVideoLoaded] = useState(false)
-  
+  const slides = useMemo(
+    () => (Array.isArray(content.hero_slides) ? content.hero_slides.filter((slide) => slide.image) : []),
+    [content.hero_slides],
+  )
+  const hasSlides = slides.length > 0
+  const slider = useHeroSlider(slides)
+
   const whatsappUrl = `https://wa.me/${content.whatsapp_number || '96899793939'}?text=${encodeURIComponent(
     whatsappMessage,
   )}`
@@ -31,6 +40,9 @@ export default function HeroSection({ content }) {
   return (
     <section className="relative isolate min-h-[calc(100svh-72px)] overflow-hidden border-b border-stone-900 bg-stone-950 text-[#fffdf8] sm:min-h-[calc(100svh-88px)]">
       <div className="pointer-events-none absolute inset-0 -z-10 bg-stone-950">
+        {hasSlides ? (
+          <HeroSlides slider={slider} />
+        ) : (
         <video
           className={`h-full w-full object-cover object-top transition-opacity duration-1000 ease-in-out ${isVideoLoaded ? 'opacity-70' : 'opacity-0'}`}
           autoPlay
@@ -45,6 +57,7 @@ export default function HeroSection({ content }) {
           <source src="/videos/muttrah-hero.mp4" type="video/mp4" />
           <source src="/videos/muttrah-hero.MOV" type="video/quicktime" />
         </video>
+        )}
         <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(17,16,14,0.92)_0%,rgba(17,16,14,0.68)_48%,rgba(17,16,14,0.44)_100%)]" />
         <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-stone-950 to-transparent" />
       </div>
@@ -77,6 +90,7 @@ export default function HeroSection({ content }) {
               href={whatsappUrl}
               target="_blank"
               rel="noreferrer"
+              onClick={() => trackEvent('whatsapp_click', { location: 'hero_contact_sales' })}
               className="block w-full cursor-pointer text-center rounded-full border border-white/35 bg-white/10 px-6 py-4 text-[13px] font-bold uppercase tracking-wider text-[#fffdf8] backdrop-blur active:bg-white/20 transition-colors sm:w-auto sm:px-8 sm:py-3.5"
             >
               {content.secondary_button_label}

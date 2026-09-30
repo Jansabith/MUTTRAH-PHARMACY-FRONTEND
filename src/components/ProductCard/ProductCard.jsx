@@ -1,74 +1,68 @@
 import { Link } from 'react-router-dom'
 import { getMediaUrl } from '../../services/api'
 import { motion } from 'framer-motion'
+import ShareButton from '../ShareButton/ShareButton'
 
 export default function ProductCard({ product }) {
   const imageUrl = getMediaUrl(product.image)
 
   return (
-    <motion.article 
+    <motion.article
       initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-50px" }}
       transition={{ duration: 0.5, ease: "easeOut" }}
-      whileHover={{ y: -5 }}
-      className="group flex h-full flex-col overflow-hidden rounded-3xl border border-[#ded8cc] bg-[#fffdf8] transition-all duration-300 shadow-sm hover:border-[#b7774f] hover:shadow-xl hover:shadow-stone-950/10"
+      className="group flex h-full flex-col"
     >
       <Link to={`/products/${product.slug}`} className="block">
-        <div className="product-image-fallback aspect-square overflow-hidden border-b border-[#ded8cc] bg-[#f8f5ee]">
+        <div className="flex aspect-square items-center justify-center">
           {imageUrl ? (
             <img
               src={imageUrl}
               alt={product.name}
-              className="h-full w-full object-contain p-4 transition duration-500 group-hover:scale-105 sm:p-5"
+              className="max-h-full max-w-full object-contain mix-blend-multiply transition duration-500 ease-out group-hover:scale-105"
               loading="lazy"
             />
           ) : (
-            <div className="flex h-full items-center justify-center px-6 text-center">
-              <div>
-                <p className="display-serif text-3xl leading-none text-stone-950">
-                  MP
-                </p>
-                <p className="mt-2 text-xs font-bold uppercase text-stone-500">
-                  Product image
-                </p>
-              </div>
+            <div className="text-center">
+              <p className="display-serif text-3xl leading-none text-stone-300">
+                MP
+              </p>
+              <p className="mt-2 text-xs font-bold uppercase text-stone-300">
+                Product image
+              </p>
             </div>
           )}
         </div>
       </Link>
 
-      <div className="flex flex-1 flex-col p-5 sm:p-6">
-        <div className="mb-4 flex flex-wrap gap-2">
-          {product.company_name && (
-            <span className="rounded-full border border-[#ded8cc] bg-[#f8f5ee] px-3 py-1 text-[0.68rem] font-bold uppercase text-stone-700">
-              {product.company_name}
-            </span>
-          )}
-          {product.category_name && (
-            <span className="rounded-full border border-[#ded8cc] bg-white px-3 py-1 text-[0.68rem] font-bold uppercase text-[#70443d]">
-              {product.category_name}
-            </span>
-          )}
-        </div>
+      <div className="flex flex-1 flex-col pt-5">
+        {(product.company_name || product.category_name) && (
+          <p className="truncate text-xs font-medium uppercase tracking-[0.08em] text-stone-400">
+            {[product.company_name, product.category_name].filter(Boolean).join(' · ')}
+          </p>
+        )}
 
-        <h3 className="display-serif text-[1.45rem] leading-tight text-stone-950 sm:text-2xl">
+        <h3 className="mt-2 line-clamp-2 text-base font-medium leading-snug text-stone-900 sm:text-[1.05rem]">
           <Link to={`/products/${product.slug}`} className="transition hover:text-[#70443d]">
             {product.name}
           </Link>
         </h3>
 
-        <p className="mt-3 line-clamp-3 text-sm leading-6 text-stone-600">
-          {product.description}
-        </p>
+        {product.description ? (
+          <p className="mt-1.5 line-clamp-2 text-sm leading-6 text-stone-500">
+            {product.description}
+          </p>
+        ) : null}
 
-        <div className="mt-auto pt-6">
+        <div className="mt-auto flex items-stretch gap-2 pt-5">
           <Link
             to={`/products/${product.slug}`}
-            className="inline-flex w-full items-center justify-center rounded-full border border-stone-950 px-4 py-3 text-xs font-bold uppercase text-stone-950 transition-all hover:bg-stone-950 hover:text-[#fffdf8] hover:scale-105 active:scale-95"
+            className="inline-flex flex-1 items-center justify-center rounded-full bg-stone-950 px-4 py-3 text-xs font-bold uppercase text-white transition hover:bg-[#70443d]"
           >
             View Details
           </Link>
+          <ShareButton product={product} variant="icon" />
         </div>
       </div>
     </motion.article>

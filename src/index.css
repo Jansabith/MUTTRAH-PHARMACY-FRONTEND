@@ -161,6 +161,75 @@ textarea {
   }
 }
 
+.splash-logo-enter {
+  animation: splash-logo-enter 1100ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  perspective: 800px;
+}
+
+.splash-logo-spin {
+  animation: splash-logo-spin 1.4s ease-in-out 1100ms infinite;
+  transform-style: preserve-3d;
+}
+
+@keyframes splash-logo-enter {
+  from {
+    opacity: 0;
+    transform: scale(0.2) rotate(-360deg);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
+}
+
+@keyframes splash-logo-spin {
+  from {
+    transform: rotateY(0deg);
+  }
+
+  to {
+    transform: rotateY(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .splash-logo-enter,
+  .splash-logo-spin {
+    animation: none;
+  }
+}
+
+/* Home hero slider: slow zoom on the active slide */
+.hero-slide-zoom {
+  /* Same length as a slide, so it has settled at scale(1) when the next one starts */
+  animation: hero-slide-zoom 3s ease-out both;
+}
+
+/* "Show whole image" slides sit on the right; soften their left edge into the blur */
+@media (min-width: 1024px) {
+  .hero-slide-fade-left {
+    -webkit-mask-image: linear-gradient(to right, transparent 0%, #000 12%);
+    mask-image: linear-gradient(to right, transparent 0%, #000 12%);
+  }
+}
+
+@keyframes hero-slide-zoom {
+  from {
+    transform: scale(1.04);
+  }
+
+  to {
+    transform: scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-slide-zoom {
+    animation: none;
+  }
+}
+
 @keyframes brand-card-drop {
   from {
     opacity: 0;

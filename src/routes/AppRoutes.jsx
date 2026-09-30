@@ -6,6 +6,7 @@ const Contact = React.lazy(() => import('../pages/Contact/Contact'))
 const Home = React.lazy(() => import('../pages/Home/Home'))
 const ProductDetail = React.lazy(() => import('../pages/ProductDetail/ProductDetail'))
 const Products = React.lazy(() => import('../pages/Products/Products'))
+const NotFound = React.lazy(() => import('../pages/NotFound/NotFound'))
 import Loader from '../components/Loader/Loader'
 import ScrollToTop from '../components/ScrollToTop/ScrollToTop'
 
@@ -38,6 +39,11 @@ export default function AppRoutes() {
           <Route path="/contact" element={
             <Suspense fallback={<Loader />}>
               <Contact />
+            </Suspense>
+          } />
+          <Route path="*" element={
+            <Suspense fallback={<Loader />}>
+              <NotFound />
             </Suspense>
           } />
         </Route>

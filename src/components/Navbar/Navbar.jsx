@@ -102,11 +102,16 @@ export default function Navbar() {
         <nav className="pointer-events-auto container-shell flex h-14 items-center justify-between gap-3 rounded-full border border-white/60 bg-[#fffdf8]/58 px-3 shadow-[0_24px_80px_rgba(17,16,14,0.14)] backdrop-blur-2xl ring-1 ring-[#ded8cc]/45 sm:h-16 sm:px-5 lg:gap-5">
           <Link
             to="/"
-            className="display-serif min-w-0 flex-1 truncate text-xl leading-none text-stone-950 sm:text-3xl lg:flex-none"
+            className="display-serif flex min-w-0 flex-1 items-center gap-2 text-xl leading-none text-stone-950 sm:gap-3 sm:text-3xl lg:flex-none"
             onClick={() => setOpen(false)}
             aria-label="Muttrah Pharmacy Home"
           >
-            Muttrah Pharmacy
+            <img
+              src="/muttrah_pharmacy_oman_logo.webp"
+              alt=""
+              className="h-10 w-10 shrink-0 object-contain sm:h-12 sm:w-12"
+            />
+            <span className="truncate">Muttrah Pharmacy</span>
           </Link>
 
           <div className="hidden items-center gap-2 lg:flex xl:gap-4">

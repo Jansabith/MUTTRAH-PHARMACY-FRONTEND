@@ -34,6 +34,7 @@ export default function Products() {
   const [debouncedSearch, setDebouncedSearch] = useState('')
   const [page, setPage] = useState(1)
   const [hasMore, setHasMore] = useState(false)
+  const [retryCount, setRetryCount] = useState(0)
   const [totalProducts, setTotalProducts] = useState(0)
 
   const [loadingProducts, setLoadingProducts] = useState(false)
@@ -120,7 +121,7 @@ export default function Products() {
 
     async function loadProducts() {
       try {
-        if (page === 1) setLoadingProducts(true)
+        setLoadingProducts(true)
         setError('')
         const response = await productsAPI.getAll({
           company: selectedCompany,
@@ -139,7 +140,13 @@ export default function Products() {
           setTotalProducts(response.count)
         }
       } catch {
-        if (active) setError('Unable to load products from the Django API.')
+        if (active) {
+          setError(
+            page === 1
+              ? 'Unable to load products from the Django API.'
+              : 'Unable to load more products. Please try again.',
+          )
+        }
       } finally {
         if (active) setLoadingProducts(false)
       }
@@ -150,7 +157,7 @@ export default function Products() {
     return () => {
       active = false
     }
-  }, [selectedCategory, selectedCompany, selectedCompanyLine, debouncedSearch, page])
+  }, [selectedCategory, selectedCompany, selectedCompanyLine, debouncedSearch, page, retryCount])
 
   // Frontend filtering logic has been moved to backend search
 
@@ -269,9 +276,9 @@ export default function Products() {
               </motion.div>
             ) : null}
 
-            {!error && products.length > 0 ? (
+            {(!error || page > 1) && products.length > 0 ? (
               <>
-                <motion.div variants={staggerContainer} className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
+                <motion.div variants={staggerContainer} className="grid gap-x-8 gap-y-14 sm:grid-cols-2 xl:grid-cols-3">
                   {products.map((product) => (
                     <ProductCard key={product.id} product={product} />
                   ))}
@@ -280,11 +287,13 @@ export default function Products() {
                 {hasMore && (
                   <div className="mt-12 flex justify-center">
                     <button 
-                      onClick={() => setPage(p => p + 1)}
+                      onClick={() =>
+                        error ? setRetryCount((count) => count + 1) : setPage((p) => p + 1)
+                      }
                       disabled={loadingProducts}
                       className="rounded-full border border-stone-950 bg-stone-950 px-8 py-4 text-xs font-bold uppercase text-[#fffdf8] transition-all hover:bg-stone-800 disabled:opacity-50"
                     >
-                      {loadingProducts ? 'Loading...' : 'Load More Products'}
+                      {loadingProducts ? 'Loading...' : error ? 'Try Again' : 'Load More Products'}
                     </button>
                   </div>
                 )}
