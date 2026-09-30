@@ -155,7 +155,7 @@ export default function ProductDetail() {
 
           <div className="grid items-start gap-5 lg:grid-cols-[0.72fr_1.28fr] lg:gap-7">
             <div>
-              <div className="aspect-[4/3] max-h-[24rem] overflow-hidden lg:aspect-[5/4]">
+              <div className="flex aspect-[4/3] max-h-[24rem] items-center justify-center overflow-hidden lg:aspect-[5/4]">
                 {showingVideo ? (
                   <iframe
                     className="h-full w-full bg-black"
@@ -168,10 +168,10 @@ export default function ProductDetail() {
                   <img
                     src={activeImage}
                     alt={product.name}
-                    className="h-full w-full object-contain mix-blend-multiply"
+                    className="max-h-full max-w-full rounded-2xl object-contain"
                   />
                 ) : (
-                  <div className="flex h-full items-center justify-center p-6 text-center">
+                  <div className="flex h-full w-full items-center justify-center p-6 text-center">
                     <div>
                       <p className="display-serif text-4xl leading-none text-stone-950 sm:text-5xl">
                         MP

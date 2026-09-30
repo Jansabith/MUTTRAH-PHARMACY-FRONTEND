@@ -57,7 +57,7 @@ export default function Contact() {
     '@context': 'https://schema.org',
     '@type': 'MedicalBusiness',
     'name': 'Muttrah Pharmacy',
-    'image': 'https://muttrahpharmacy.com/favicon.svg',
+    'image': 'https://muttrahpharmacy.com/muttrah_logo_480.webp',
     'telephone': pageContent.phone || '+968 9979 3939',
     'email': pageContent.email || 'info@muttrahpharmacy.com',
     'address': {

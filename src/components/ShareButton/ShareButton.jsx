@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { trackEvent } from '../../services/analytics'
+import { apiOrigin } from '../../services/api'
 
 function ShareIcon({ className = 'h-4 w-4' }) {
   return (
@@ -19,7 +20,9 @@ export default function ShareButton({ product, variant = 'full', className = '' 
   const [copied, setCopied] = useState(false)
   const wrapperRef = useRef(null)
 
-  const url = `${window.location.origin}/products/${product.slug}`
+  // Backend preview page: gives WhatsApp/Facebook this product's title and
+  // image (they can't run the React app), then forwards people to the product
+  const url = `${apiOrigin}/share/products/${product.slug}/`
   const text = `Check out ${product.name} at Muttrah Pharmacy`
 
   useEffect(() => {

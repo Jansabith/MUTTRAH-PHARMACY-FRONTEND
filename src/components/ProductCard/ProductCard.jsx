@@ -20,7 +20,7 @@ export default function ProductCard({ product }) {
             <img
               src={imageUrl}
               alt={product.name}
-              className="max-h-full max-w-full object-contain mix-blend-multiply transition duration-500 ease-out group-hover:scale-105"
+              className="max-h-full max-w-full rounded-2xl object-contain transition duration-500 ease-out group-hover:scale-105"
               loading="lazy"
             />
           ) : (

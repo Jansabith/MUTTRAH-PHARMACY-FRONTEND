@@ -107,7 +107,7 @@ export default function Navbar() {
             aria-label="Muttrah Pharmacy Home"
           >
             <img
-              src="/muttrah_pharmacy_oman_logo.webp"
+              src="/muttrah_logo_128.webp"
               alt=""
               className="h-10 w-10 shrink-0 object-contain sm:h-12 sm:w-12"
             />

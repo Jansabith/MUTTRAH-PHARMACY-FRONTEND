@@ -49,7 +49,8 @@ export default function SplashScreen({ onComplete }) {
       <div className="relative flex w-full max-w-xl flex-col items-center px-2 sm:px-4 text-center">
         <div className="splash-logo-enter mx-auto mb-6 sm:mb-8 w-44 min-[380px]:w-52 sm:w-64 md:w-72">
           <img
-            src="/muttrah_pharmacy_oman_logo.webp"
+            src="/muttrah_logo_480.webp"
+            fetchPriority="high"
             alt="Muttrah Pharmacy logo"
             className="splash-logo-spin block h-auto w-full drop-shadow-[0_10px_25px_rgba(30,64,175,0.35)]"
           />

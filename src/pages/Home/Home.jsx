@@ -65,7 +65,7 @@ export default function Home() {
     '@context': 'https://schema.org',
     '@type': 'MedicalBusiness',
     'name': 'Muttrah Pharmacy',
-    'image': 'https://muttrahpharmacy.com/favicon.svg',
+    'image': 'https://muttrahpharmacy.com/muttrah_logo_480.webp',
     '@id': 'https://muttrahpharmacy.com/#organization',
     'url': 'https://muttrahpharmacy.com',
     'telephone': `+${pageContent.whatsapp_number || '96899793939'}`,
