@@ -2,11 +2,22 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/webp" href="/muttrah_pharmacy_oman_logo.webp" />
-    <link rel="apple-touch-icon" href="/muttrah_pharmacy_oman_logo.webp" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="preload" href="/videos/muttrah-hero.mp4" as="video" type="video/mp4" />
-    <title>muttrah-pharmacy-frontend-react</title>
+    <!-- Start downloading the loading-screen logo right away, before the app's JavaScript runs -->
+    <link rel="preload" href="/muttrah_logo_480.webp" as="image" type="image/webp" fetchpriority="high" />
+    <title>Muttrah Pharmacy | Medical &amp; Orthopedic Distributor in Oman</title>
+    <meta name="description" content="Muttrah Pharmacy is a trusted pharmaceutical and orthopedic healthcare supplier in Muscat, Oman, serving clinics, hospitals, and pharmacies with quality medical products." />
+
+    <!-- Link previews (WhatsApp, Facebook, LinkedIn) read these tags directly -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Muttrah Pharmacy" />
+    <meta property="og:title" content="Muttrah Pharmacy | Medical &amp; Orthopedic Distributor in Oman" />
+    <meta property="og:description" content="Trusted pharmaceutical and orthopedic healthcare supplier in Muscat, Oman." />
+    <meta property="og:url" content="https://muttrahpharmacy.com/" />
+    <meta property="og:image" content="https://muttrahpharmacy.com/muttrah_logo_480.webp" />
+    <meta name="twitter:card" content="summary_large_image" />
   </head>
   <body>
     <div id="root"></div>

@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { useMemo, useState } from 'react'
+import { useMemo } from 'react'
 import { motion } from 'framer-motion'
 import { HeroSlides } from './HeroSlider'
 import { useHeroSlider } from './useHeroSlider'
@@ -25,7 +25,6 @@ const fadeUpVariant = {
 }
 
 export default function HeroSection({ content }) {
-  const [isVideoLoaded, setIsVideoLoaded] = useState(false)
   const slides = useMemo(
     () => (Array.isArray(content.hero_slides) ? content.hero_slides.filter((slide) => slide.image) : []),
     [content.hero_slides],
@@ -40,24 +39,8 @@ export default function HeroSection({ content }) {
   return (
     <section className="relative isolate min-h-[calc(100svh-72px)] overflow-hidden border-b border-stone-900 bg-stone-950 text-[#fffdf8] sm:min-h-[calc(100svh-88px)]">
       <div className="pointer-events-none absolute inset-0 -z-10 bg-stone-950">
-        {hasSlides ? (
-          <HeroSlides slider={slider} />
-        ) : (
-        <video
-          className={`h-full w-full object-cover object-top transition-opacity duration-1000 ease-in-out ${isVideoLoaded ? 'opacity-70' : 'opacity-0'}`}
-          autoPlay
-          muted
-          loop
-          playsInline
-          preload="auto"
-          aria-hidden="true"
-          tabIndex="-1"
-          onLoadedData={() => setIsVideoLoaded(true)}
-        >
-          <source src="/videos/muttrah-hero.mp4" type="video/mp4" />
-          <source src="/videos/muttrah-hero.MOV" type="video/quicktime" />
-        </video>
-        )}
+        {/* With no slides added in admin, the hero keeps its plain dark background */}
+        {hasSlides ? <HeroSlides slider={slider} /> : null}
         <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(17,16,14,0.92)_0%,rgba(17,16,14,0.68)_48%,rgba(17,16,14,0.44)_100%)]" />
         <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-stone-950 to-transparent" />
       </div>

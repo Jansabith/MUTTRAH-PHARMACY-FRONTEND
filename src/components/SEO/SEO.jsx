@@ -4,9 +4,14 @@ export default function SEO({ title, description, keywords, image, schema }) {
   const defaultTitle = 'Muttrah Pharmacy | Medical & Orthopedic Distributor in Oman'
   const defaultDesc = 'Muttrah Pharmacy is a leading distributor and warehouse partner for clinics, hospitals, and pharmacies sourcing quality pharmaceutical and orthopedic products in Oman.'
   const defaultKeywords = 'Muttrah Pharmacy, pharmacy Oman, orthopedic distributor Oman, medical supplies Muscat, pharmaceutical wholesaler Oman, bulk medicines Muscat'
-  const defaultImage = 'https://muttrahpharmacy.com/og-image.jpg' // Fallback image
+  const defaultImage = 'https://muttrahpharmacy.com/muttrah_logo_480.webp' // Fallback image
 
-  const metaTitle = title ? `${title} | Muttrah Pharmacy` : defaultTitle
+  // Don't repeat the brand when a custom SEO title already includes it
+  const metaTitle = !title
+    ? defaultTitle
+    : /muttrah pharmacy/i.test(title)
+      ? title
+      : `${title} | Muttrah Pharmacy`
   const metaDesc = description || defaultDesc
   const metaKeywords = keywords || defaultKeywords
   const metaImage = image || defaultImage

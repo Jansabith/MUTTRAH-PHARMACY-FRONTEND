@@ -23,7 +23,7 @@ export default function NotFound() {
         className="container-shell flex flex-col items-center text-center"
       >
         <img
-          src="/muttrah_pharmacy_oman_logo.webp"
+          src="/muttrah_logo_128.webp"
           alt=""
           className="h-20 w-20 object-contain sm:h-24 sm:w-24"
         />
