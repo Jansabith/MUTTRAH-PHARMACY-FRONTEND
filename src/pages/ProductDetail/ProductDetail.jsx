@@ -10,10 +10,9 @@ import {
 } from '../../services/api'
 import SEO from '../../components/SEO/SEO'
 import ShareButton from '../../components/ShareButton/ShareButton'
+import ProductGallery from '../../components/ProductGallery/ProductGallery'
 import { trackEvent } from '../../services/analytics'
 import useWhatsAppNumber from '../../hooks/useWhatsAppNumber'
-
-const VIDEO_KEY = '__youtube_video__'
 
 // Accepts youtube.com/watch?v=, youtu.be/, /shorts/, /embed/ and /live/ links
 function getYouTubeId(url) {
@@ -28,7 +27,6 @@ export default function ProductDetail() {
   const { slug } = useParams()
   const [product, setProduct] = useState(null)
   const [relatedProducts, setRelatedProducts] = useState([])
-  const [activeImage, setActiveImage] = useState('')
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const whatsappNumber = useWhatsAppNumber()
@@ -51,7 +49,6 @@ export default function ProductDetail() {
           setRelatedProducts(
             (related.results || []).filter((item) => String(item.slug) !== String(slug)).slice(0, 3),
           )
-          setActiveImage(getMediaUrl(productData.image))
         }
       } catch {
         if (active) setError('Unable to load this product from the Django API.')
@@ -74,7 +71,6 @@ export default function ProductDetail() {
   }, [product])
 
   const youtubeId = getYouTubeId(product?.youtube_url)
-  const showingVideo = Boolean(youtubeId) && activeImage === VIDEO_KEY
 
   const sizes = getProductSizes(product)
 
@@ -155,84 +151,11 @@ export default function ProductDetail() {
 
           <div className="grid items-start gap-5 lg:grid-cols-[0.72fr_1.28fr] lg:gap-7">
             <div>
-              <div className="flex aspect-[4/3] max-h-[24rem] items-center justify-center overflow-hidden lg:aspect-[5/4]">
-                {showingVideo ? (
-                  <iframe
-                    className="h-full w-full bg-black"
-                    src={`https://www.youtube-nocookie.com/embed/${youtubeId}?autoplay=1&rel=0`}
-                    title={`${product.name} video`}
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                  />
-                ) : activeImage ? (
-                  <img
-                    src={activeImage}
-                    alt={product.name}
-                    className="max-h-full max-w-full rounded-2xl object-contain"
-                  />
-                ) : (
-                  <div className="flex h-full w-full items-center justify-center p-6 text-center">
-                    <div>
-                      <p className="display-serif text-4xl leading-none text-stone-950 sm:text-5xl">
-                        MP
-                      </p>
-                      <p className="mt-3 text-xs font-bold uppercase text-stone-500">
-                        Product image
-                      </p>
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              {galleryImages.length > 1 || youtubeId ? (
-                <div className="mt-2 flex flex-wrap gap-2">
-                  {galleryImages.map((image) => (
-                    <button
-                      key={image}
-                      type="button"
-                      onClick={() => setActiveImage(image)}
-                      className={[
-                        'h-18 w-18 overflow-hidden border bg-[#fffdf8] transition sm:h-20 sm:w-20 lg:h-24 lg:w-24',
-                        activeImage === image
-                          ? 'border-[#70443d] ring-4 ring-[#b7774f]/15'
-                          : 'border-[#ded8cc] hover:border-stone-950',
-                      ].join(' ')}
-                    >
-                      <img
-                        src={image}
-                        alt={`${product.name} gallery`}
-                        className="h-full w-full object-contain p-2"
-                      />
-                    </button>
-                  ))}
-                  {youtubeId ? (
-                    <button
-                      type="button"
-                      onClick={() => setActiveImage(VIDEO_KEY)}
-                      aria-label={`Play ${product.name} video`}
-                      className={[
-                        'relative h-18 w-18 overflow-hidden border bg-black transition sm:h-20 sm:w-20 lg:h-24 lg:w-24',
-                        showingVideo
-                          ? 'border-[#70443d] ring-4 ring-[#b7774f]/15'
-                          : 'border-[#ded8cc] hover:border-stone-950',
-                      ].join(' ')}
-                    >
-                      <img
-                        src={`https://img.youtube.com/vi/${youtubeId}/mqdefault.jpg`}
-                        alt=""
-                        className="h-full w-full object-cover opacity-80"
-                      />
-                      <span className="absolute inset-0 flex items-center justify-center">
-                        <span className="flex h-8 w-8 items-center justify-center rounded-full bg-red-600 text-white shadow-lg">
-                          <svg className="ml-0.5 h-4 w-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                            <path d="M8 5v14l11-7z" />
-                          </svg>
-                        </span>
-                      </span>
-                    </button>
-                  ) : null}
-                </div>
-              ) : null}
+              <ProductGallery
+                images={galleryImages}
+                youtubeId={youtubeId}
+                productName={product.name}
+              />
             </div>
 
             <div>
