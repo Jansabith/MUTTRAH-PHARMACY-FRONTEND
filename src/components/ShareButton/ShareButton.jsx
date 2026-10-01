@@ -96,7 +96,7 @@ export default function ShareButton({ product, variant = 'full', className = '' 
 
   const buttonClass =
     variant === 'icon'
-      ? 'inline-flex h-full min-h-11 w-12 items-center justify-center rounded-full border border-[#ded8cc] text-stone-700 transition hover:border-stone-950 hover:bg-stone-950 hover:text-[#fffdf8]'
+      ? 'inline-flex h-full min-h-10 w-10 items-center sm:min-h-11 sm:w-12 justify-center rounded-full border border-[#ded8cc] text-stone-700 transition hover:border-stone-950 hover:bg-stone-950 hover:text-[#fffdf8]'
       : 'inline-flex w-full items-center justify-center gap-2 rounded-full border border-stone-950 bg-transparent px-5 py-2.5 !text-xs !font-bold uppercase text-stone-950 transition hover:bg-stone-950 hover:text-[#fffdf8] sm:w-auto'
 
   return (
