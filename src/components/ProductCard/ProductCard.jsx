@@ -36,29 +36,30 @@ export default function ProductCard({ product }) {
         </div>
       </Link>
 
-      <div className="flex flex-1 flex-col pt-5">
+      {/* Compact on phones, where two cards sit side by side */}
+      <div className="flex flex-1 flex-col pt-3 sm:pt-5">
         {(product.company_name || product.category_name) && (
-          <p className="truncate text-xs font-medium uppercase tracking-[0.08em] text-stone-400">
+          <p className="truncate text-[10px] font-medium uppercase tracking-[0.08em] text-stone-400 sm:text-xs">
             {[product.company_name, product.category_name].filter(Boolean).join(' · ')}
           </p>
         )}
 
-        <h3 className="mt-2 line-clamp-2 text-base font-medium leading-snug text-stone-900 sm:text-[1.05rem]">
+        <h3 className="mt-1 line-clamp-2 text-sm font-medium leading-snug text-stone-900 sm:mt-2 sm:text-[1.05rem]">
           <Link to={`/products/${product.slug}`} className="transition hover:text-[#70443d]">
             {product.name}
           </Link>
         </h3>
 
         {product.description ? (
-          <p className="mt-1.5 line-clamp-2 text-sm leading-6 text-stone-500">
+          <p className="mt-1.5 hidden text-sm leading-6 text-stone-500 sm:line-clamp-2">
             {product.description}
           </p>
         ) : null}
 
-        <div className="mt-auto flex items-stretch gap-2 pt-5">
+        <div className="mt-auto flex items-stretch gap-1.5 pt-3 sm:gap-2 sm:pt-5">
           <Link
             to={`/products/${product.slug}`}
-            className="inline-flex flex-1 items-center justify-center rounded-full bg-stone-950 px-4 py-3 text-xs font-bold uppercase text-white transition hover:bg-[#70443d]"
+            className="inline-flex flex-1 items-center justify-center whitespace-nowrap rounded-full bg-stone-950 px-2 py-2.5 text-[11px] font-bold uppercase text-white transition hover:bg-[#70443d] sm:px-4 sm:py-3 sm:text-xs"
           >
             View Details
           </Link>

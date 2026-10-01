@@ -14,27 +14,37 @@ export default function ProductFilters({
   onCategoryChange,
   onSearchChange,
   onClear,
+  // Mobile filter panel: no card/header (the panel has its own) and no search
+  // box (search sits in the mobile toolbar instead)
+  bare = false,
+  showSearch = true,
 }) {
   return (
-    <aside className="h-fit border border-[#ded8cc] bg-[#fffdf8] p-4 sm:p-5 lg:sticky lg:top-24">
-      <div className="mb-6 flex items-start justify-between gap-4 border-b border-[#ded8cc] pb-5">
-        <div>
-          <p className="micro-copy text-[#70443d]">Filters</p>
-          <h2 className="display-serif mt-2 text-4xl leading-none text-stone-950">
-            Catalog
-          </h2>
+    <aside
+      className={
+        bare ? '' : 'h-fit border border-[#ded8cc] bg-[#fffdf8] p-4 sm:p-5 lg:sticky lg:top-24'
+      }
+    >
+      {bare ? null : (
+        <div className="mb-6 flex items-start justify-between gap-4 border-b border-[#ded8cc] pb-5">
+          <div>
+            <p className="micro-copy text-[#70443d]">Filters</p>
+            <h2 className="display-serif mt-2 text-4xl leading-none text-stone-950">
+              Catalog
+            </h2>
+          </div>
+          <button
+            type="button"
+            onClick={onClear}
+            className="rounded-full border border-[#ded8cc] px-3 py-2 text-xs font-bold uppercase text-stone-600 transition hover:border-stone-950 hover:text-stone-950"
+          >
+            Clear
+          </button>
         </div>
-        <button
-          type="button"
-          onClick={onClear}
-          className="rounded-full border border-[#ded8cc] px-3 py-2 text-xs font-bold uppercase text-stone-600 transition hover:border-stone-950 hover:text-stone-950"
-        >
-          Clear
-        </button>
-      </div>
+      )}
 
       <div className="space-y-5">
-        <SearchBar value={search} onChange={onSearchChange} />
+        {showSearch ? <SearchBar value={search} onChange={onSearchChange} /> : null}
 
         <label className="block">
           <span className="mb-2 block text-xs font-bold uppercase text-stone-700">
