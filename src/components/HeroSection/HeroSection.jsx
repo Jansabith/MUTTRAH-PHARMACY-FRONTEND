@@ -4,6 +4,7 @@ import { motion } from 'framer-motion'
 import { HeroSlides } from './HeroSlider'
 import { useHeroSlider } from './useHeroSlider'
 import { trackEvent } from '../../services/analytics'
+import FeatureIcon from '../FeatureIcon/FeatureIcon'
 
 const whatsappMessage =
   'Hello Muttrah Pharmacy ,\n\nI would like to know more about your products and services. Please share the details and assist me with my requirements.\n\nThank you.'
@@ -23,6 +24,13 @@ const fadeUpVariant = {
   hidden: { opacity: 0, y: 30 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" } }
 }
+
+const heroHighlights = [
+  { icon: 'trophy', title: '46+ Years', subtitle: 'of Experience' },
+  { icon: 'shield', title: 'Authorized', subtitle: 'Distributor' },
+  { icon: 'box', title: 'Wide Product', subtitle: 'Range' },
+  { icon: 'truck', title: 'Serving', subtitle: 'Across Oman' },
+]
 
 export default function HeroSection({ content }) {
   const slides = useMemo(
@@ -52,7 +60,7 @@ export default function HeroSection({ content }) {
           variants={staggerContainer}
           className="max-w-5xl w-full"
         >
-          <motion.p variants={fadeUpVariant} className="micro-copy max-w-lg text-[#f1d1b8]">
+          <motion.p variants={fadeUpVariant} className="micro-copy section-eyebrow max-w-lg text-[#f1d1b8]">
             {content.hero_eyebrow}
           </motion.p>
 
@@ -79,6 +87,21 @@ export default function HeroSection({ content }) {
               {content.secondary_button_label}
             </a>
           </motion.div>
+
+          <motion.ul
+            variants={fadeUpVariant}
+            className="mt-10 grid max-w-4xl grid-cols-2 gap-x-6 gap-y-6 sm:mt-12 lg:grid-cols-4 lg:gap-x-8"
+          >
+            {heroHighlights.map(({ icon, title, subtitle }) => (
+              <li key={title} className="flex items-center gap-3">
+                <FeatureIcon name={icon} className="h-9 w-9 shrink-0 text-[#e0a77f] sm:h-10 sm:w-10" />
+                <p className="text-sm leading-snug sm:text-[15px]">
+                  <span className="block font-bold text-[#fffdf8]">{title}</span>
+                  <span className="block text-stone-300">{subtitle}</span>
+                </p>
+              </li>
+            ))}
+          </motion.ul>
         </motion.div>
       </div>
     </section>

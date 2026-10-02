@@ -334,3 +334,79 @@ select,
 button[class*="h-18"] {
   border-radius: 10px;
 }
+
+/* Auto-scrolling strips (brands, product showcase): soft fade at both edges.
+   The motion itself is in hooks/useMarquee.js */
+.marquee-fade {
+  -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 6%, #000 94%, transparent 100%);
+  mask-image: linear-gradient(90deg, transparent 0, #000 6%, #000 94%, transparent 100%);
+}
+
+/* Section sub headings (the small uppercase line above each title) */
+.section-eyebrow {
+  font-size: 1.05rem;
+  letter-spacing: 0.18em;
+}
+
+@media (max-width: 639px) {
+  .section-eyebrow {
+    font-size: 0.92rem;
+    text-align: center;
+  }
+}
+
+/* Navbar search bar: blinking cursor after the typed hint */
+.typing-caret {
+  display: inline-block;
+  width: 1px;
+  height: 1.05em;
+  margin-left: 2px;
+  vertical-align: -0.18em;
+  background: #b7774f;
+  animation: typing-caret-blink 1s steps(1) infinite;
+}
+
+@keyframes typing-caret-blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .typing-caret {
+    animation: none;
+  }
+}
+
+/* Navbar search bar: fine gradient ring (dark to copper) that shimmers on hover.
+   Drawn on a masked layer so the bar itself can stay see-through glass. */
+.search-pill {
+  position: relative;
+  isolation: isolate;
+}
+
+.search-pill::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  padding: 1px;
+  border-radius: inherit;
+  background: linear-gradient(110deg, #1c1917 0%, #b7774f 35%, #1c1917 60%, #b7774f 85%, #1c1917 100%);
+  background-size: 220% 100%;
+  background-position: 0% 0;
+  transition: background-position 0.9s ease;
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+.search-pill--dark::before {
+  background-image: linear-gradient(110deg, rgba(255, 255, 255, 0.7) 0%, #f1d1b8 35%, rgba(255, 255, 255, 0.7) 60%, #f1d1b8 85%, rgba(255, 255, 255, 0.7) 100%);
+}
+
+.search-pill:hover::before,
+.search-pill:focus-visible::before {
+  background-position: 100% 0;
+}

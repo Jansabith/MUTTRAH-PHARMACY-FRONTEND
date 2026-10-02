@@ -91,6 +91,13 @@ export const productsAPI = {
     const { data } = await apiClient.get(`/products/${slug}/`)
     return data
   },
+
+  // Navbar live search: { query, count, products, brands, categories }.
+  // Pass an AbortSignal so an outdated request can be cancelled while typing.
+  async suggest(query, signal) {
+    const { data } = await apiClient.get('/products/suggest/', { params: { q: query }, signal })
+    return data
+  },
 }
 
 export const companiesAPI = {
@@ -124,6 +131,12 @@ export const categoriesAPI = {
 export const websiteAPI = {
   async getHome() {
     return fetchWithCache('/website/home/')
+  },
+
+  // Home page product tabs: [{ key, name, subtitle, products: [] }], in tab order
+  async getShowcase() {
+    const data = await fetchWithCache('/website/showcase/')
+    return Array.isArray(data) ? data : []
   },
 
   async getAbout() {

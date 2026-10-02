@@ -107,6 +107,7 @@ export default function ImageLightbox({ images, startIndex, productName, onClose
       <div className="relative min-h-0 flex-1" onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
         <div
           ref={scrollerRef}
+          data-lenis-prevent
           className={['h-full w-full', zoomed ? 'overflow-auto' : 'overflow-hidden'].join(' ')}
         >
           <div

@@ -254,7 +254,7 @@ export default function ProductDetail() {
       <section className="bg-[#f8f5ee] py-10 sm:py-12 lg:py-14">
         <div className="container-shell max-w-7xl">
           <div className="mb-8">
-            <p className="micro-copy text-[#70443d]">Related Products</p>
+            <p className="micro-copy section-eyebrow text-[#70443d]">Related Products</p>
             <h2 className="display-serif mt-4 text-[2.1rem] leading-tight text-stone-950 sm:text-[3rem] lg:text-[4rem]">
               Similar catalog items
             </h2>

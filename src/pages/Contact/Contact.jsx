@@ -86,7 +86,7 @@ export default function Contact() {
           className="mb-12 flex flex-col items-center text-center gap-6 border-b border-[#ded8cc] pb-10"
         >
           <div>
-            <p className="micro-copy text-[#70443d]">{pageContent.eyebrow}</p>
+            <p className="micro-copy section-eyebrow text-[#70443d]">{pageContent.eyebrow}</p>
             <h1 className="sr-only">{pageContent.meta_title || 'Contact Us'}</h1>
           </div>
           <p className="max-w-3xl text-xl font-semibold leading-8 text-stone-800 mx-auto sm:text-2xl sm:leading-9 lg:text-3xl lg:leading-snug">
@@ -101,22 +101,45 @@ export default function Contact() {
             variants={staggerContainer}
             className="grid gap-6 md:grid-cols-3"
           >
+            {/* Second email / phone are optional; each value gets its own line */}
             {[
-              [pageContent.address_label, pageContent.address],
-              [pageContent.email_label, pageContent.email],
-              [pageContent.phone_label, pageContent.phone],
-            ].map(([label, value], index) => (
-              <motion.article 
-                key={label + index} 
+              { type: 'address', label: pageContent.address_label, values: [pageContent.address] },
+              { type: 'email', label: pageContent.email_label, values: [pageContent.email, pageContent.email_2] },
+              { type: 'phone', label: pageContent.phone_label, values: [pageContent.phone, pageContent.phone_2] },
+            ].map(({ type, label, values }) => (
+              <motion.article
+                key={type}
                 variants={fadeUpVariant}
                 whileHover={{ y: -5 }}
                 className="bg-[#f8f5ee] p-6 sm:p-8 rounded-3xl border border-[#ded8cc] shadow-sm hover:shadow-md transition-all duration-300"
               >
                 <span className="mb-6 block h-1 w-12 rounded-full bg-[#b7774f]" />
                 <p className="micro-copy text-[#70443d]">{label}</p>
-                <p className="display-serif mt-4 break-words text-[1.45rem] leading-snug text-stone-950 sm:text-2xl">
-                  {value}
-                </p>
+                <div className="mt-4 space-y-2">
+                  {values.filter(Boolean).map((value) => {
+                    if (type === 'address') {
+                      return (
+                        <p key={value} className="display-serif break-words text-[1.45rem] leading-snug text-stone-950 sm:text-2xl">
+                          {value}
+                        </p>
+                      )
+                    }
+                    const href = type === 'email' ? `mailto:${value}` : `tel:${value.replace(/[^\d+]/g, '')}`
+                    return (
+                      <a
+                        key={value}
+                        href={href}
+                        className={[
+                          'display-serif block break-words leading-snug text-stone-950 transition-colors hover:text-[#b7774f]',
+                          // Emails are long, so a size that keeps them on one line
+                          type === 'email' ? 'text-lg sm:text-xl' : 'text-[1.45rem] sm:text-2xl',
+                        ].join(' ')}
+                      >
+                        {value}
+                      </a>
+                    )
+                  })}
+                </div>
               </motion.article>
             ))}
           </motion.div>

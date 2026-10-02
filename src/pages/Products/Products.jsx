@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { useSearchParams } from 'react-router-dom'
+import { useLocation, useSearchParams } from 'react-router-dom'
 import Loader from '../../components/Loader/Loader'
 import ProductCard from '../../components/ProductCard/ProductCard'
 import ProductFilters from '../../components/ProductFilters/ProductFilters'
@@ -24,15 +24,29 @@ const staggerContainer = {
 
 export default function Products() {
   const [searchParams, setSearchParams] = useSearchParams()
+  const location = useLocation()
   const [products, setProducts] = useState([])
   const [companies, setCompanies] = useState([])
   const [categories, setCategories] = useState([])
   const selectedCompany = searchParams.get('company') || ''
   const selectedCompanyLine = searchParams.get('company_line') || ''
   const selectedCategory = searchParams.get('category') || ''
-  const [search, setSearch] = useState('')
-  const [debouncedSearch, setDebouncedSearch] = useState('')
+  // A search from the navbar arrives as ?search=... (and in the link state)
+  const [search, setSearch] = useState(() => searchParams.get('search') || '')
+  const [debouncedSearch, setDebouncedSearch] = useState(search)
   const [page, setPage] = useState(1)
+
+  // A new navbar search while already on this page fills the box again
+  const [handledLocationKey, setHandledLocationKey] = useState(location.key)
+  if (location.key !== handledLocationKey) {
+    setHandledLocationKey(location.key)
+    const navbarSearch = location.state?.search
+    if (typeof navbarSearch === 'string') {
+      setSearch(navbarSearch)
+      setDebouncedSearch(navbarSearch)
+      setPage(1)
+    }
+  }
   const [hasMore, setHasMore] = useState(false)
   const [retryCount, setRetryCount] = useState(0)
   const [totalProducts, setTotalProducts] = useState(0)
@@ -242,7 +256,7 @@ export default function Products() {
           className="mb-6 border-b border-[#ded8cc] pb-6 sm:mb-12 sm:pb-10"
         >
           <div>
-            <p className="micro-copy text-[#70443d]">Products</p>
+            <p className="micro-copy section-eyebrow text-[#70443d]">Products</p>
             <h1 className="display-serif page-title mt-4 text-stone-950">
               Product catalog
             </h1>
@@ -392,7 +406,7 @@ export default function Products() {
                 </button>
               </div>
 
-              <div className="flex-1 overflow-y-auto px-5 py-5">
+              <div data-lenis-prevent className="flex-1 overflow-y-auto px-5 py-5">
                 {loadingCompanies ? (
                   <Loader type="filters" />
                 ) : (

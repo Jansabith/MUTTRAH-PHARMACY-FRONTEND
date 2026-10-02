@@ -6,6 +6,9 @@ import useCatalogData from '../../hooks/useCatalogData'
 import { websiteAPI } from '../../services/api'
 import { motion } from 'framer-motion'
 import SEO from '../../components/SEO/SEO'
+import FeatureIcon from '../../components/FeatureIcon/FeatureIcon'
+import BrandMarquee from '../../components/BrandMarquee/BrandMarquee'
+import ProductShowcase from '../../components/ProductShowcase/ProductShowcase'
 
 const fadeUpVariant = {
   hidden: { opacity: 0, y: 30 },
@@ -25,7 +28,6 @@ const staggerContainer = {
 export default function Home() {
   const { companies, loading, error } = useCatalogData()
   const [pageContent, setPageContent] = useState(null)
-  const featuredCompanies = companies.slice(0, 8)
   const features = useMemo(
     () => pageContent?.features || [],
     [pageContent?.features],
@@ -106,77 +108,83 @@ export default function Home() {
       <HeroSection content={pageContent} />
 
       {/* Intro & Features Section */}
-      <section className="section-padding border-b border-[#ded8cc] bg-[#fffdf8]">
-        <div className="container-shell flex flex-col gap-12">
+      <section className="border-b border-[#ded8cc] bg-[#fbf9f4] py-10 sm:py-12 lg:py-14">
+        <div className="container-shell grid items-center gap-10 lg:grid-cols-[1.15fr_1fr] lg:gap-16">
           <motion.div
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, margin: "-100px" }}
             variants={fadeUpVariant}
-            className="w-full flex flex-col items-center text-center"
+            className="w-full min-w-0"
           >
-            <p className="micro-copy text-[#70443d]">
+            <p className="micro-copy section-eyebrow text-[#70443d]">
               {pageContent.intro_eyebrow}
             </p>
-            <h2 className="display-serif section-title mt-5 max-w-4xl text-stone-950 mx-auto">
+            <h2 className="display-serif mt-5 max-w-3xl text-[2rem] leading-[1.1] text-stone-950 sm:text-[2.5rem] xl:text-[2.85rem]">
               {pageContent.intro_title}
             </h2>
+            {pageContent.intro_description && (
+              <p className="mt-6 max-w-2xl text-[17px] font-medium leading-8 text-stone-700 sm:text-lg">
+                {pageContent.intro_description}
+              </p>
+            )}
           </motion.div>
-          <motion.div 
+          <motion.div
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, margin: "-100px" }}
             variants={staggerContainer}
-            className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4 w-full min-w-0"
+            className="grid w-full min-w-0 gap-4 sm:grid-cols-2"
           >
             {features.map((item) => (
               <motion.article
                 variants={fadeUpVariant}
-                whileHover={{ y: -5 }}
-                key={item.title}
-                className="border border-[#ded8cc] bg-[#f8f5ee] rounded-3xl p-6 sm:p-8 shadow-sm hover:shadow-md transition-all duration-300"
+                key={item.id || item.title}
+                title={item.description}
+                className="flex items-center gap-4 rounded-2xl border border-[#ece4d8] bg-[#fffdf8] px-5 py-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-[#d9c2ad] hover:shadow-md sm:px-6"
               >
-                <span className="mb-8 block h-1 w-16 rounded-full bg-[#b7774f]" />
-                <h3 className="display-serif text-[1.85rem] leading-none text-stone-950 sm:text-3xl">
+                <FeatureIcon name={item.icon} className="h-9 w-9 shrink-0 text-[#b0603a]" />
+                <h3 className="text-sm font-medium leading-6 text-stone-800">
                   {item.title}
                 </h3>
-                <p className="mt-5 text-sm leading-7 text-stone-600">
-                  {item.description}
-                </p>
               </motion.article>
             ))}
           </motion.div>
         </div>
       </section>
 
+      {/* Best Sellers / Featured / New Launches (Django admin > Home product showcase) */}
+      <ProductShowcase />
+
       {/* Brands Section */}
-      <section className="section-padding home-mobile-section-break border-b border-[#ded8cc] bg-[#f8f5ee]">
+      <section className="home-mobile-section-break border-b border-[#ded8cc] bg-[#fbf9f4] py-10 sm:py-12 lg:py-14">
         <div className="container-shell">
-          <motion.div 
+          <motion.div
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, margin: "-100px" }}
             variants={fadeUpVariant}
-            className="mb-12 flex flex-col items-center text-center gap-6"
+            className="mb-7 flex flex-col gap-6 md:flex-row md:items-end md:justify-between"
           >
-            <div className="max-w-3xl w-full min-w-0 flex flex-col items-center">
-              <p className="micro-copy text-[#70443d]">
+            <div className="w-full min-w-0 max-w-3xl">
+              <p className="micro-copy section-eyebrow text-[#70443d]">
                 {pageContent.brands_eyebrow}
               </p>
-              <h2 className="display-serif section-title mt-5 text-stone-950">
+              <h2 className="display-serif mt-5 text-[2rem] leading-[1.1] text-stone-950 sm:text-[2.5rem] xl:text-[2.85rem]">
                 {pageContent.brands_title}
               </h2>
               {pageContent.brands_description && (
-                <p className="mt-6 text-base md:text-lg text-stone-600 leading-relaxed max-w-2xl mx-auto">
+                <p className="mt-5 text-[17px] font-medium leading-8 text-stone-700 sm:text-lg">
                   {pageContent.brands_description}
                 </p>
               )}
             </div>
             <Link
               to="/products"
-              className="inline-flex w-fit md:mt-8 rounded-full border border-stone-950 px-6 py-4 text-xs font-bold uppercase text-stone-950 transition-all hover:bg-stone-950 hover:text-[#fffdf8] hover:scale-105 active:scale-95 shrink-0"
+              className="inline-flex w-fit shrink-0 items-center self-center md:self-auto gap-2 rounded-full border border-stone-950 px-7 py-3.5 text-xs font-bold uppercase tracking-wider text-stone-950 transition-all hover:bg-stone-950 hover:text-[#fffdf8] active:scale-95"
             >
-              View All Products
+              View All Brands
+              <span aria-hidden="true">&rarr;</span>
             </Link>
           </motion.div>
 
@@ -186,54 +194,23 @@ export default function Home() {
               {error}
             </div>
           ) : null}
-          {!loading && !error ? (
-            <motion.div 
+          {!loading && !error && companies.length ? (
+            <motion.div
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true, margin: "-100px" }}
-              variants={{
-                hidden: { opacity: 0 },
-                visible: {
-                  opacity: 1,
-                  transition: {
-                    staggerChildren: 0.2
-                  }
-                }
-              }}
-              className="grid auto-rows-[15.5rem] gap-6 sm:grid-cols-2 lg:grid-cols-4 w-full min-w-0"
+              variants={fadeUpVariant}
+              className="-mx-4 sm:mx-0"
             >
-              {featuredCompanies.map((company) => (
-                <motion.div
-                  variants={{
-                    hidden: { opacity: 0, y: 30 },
-                    visible: { opacity: 1, y: 0, transition: { duration: 0.4, ease: "easeOut" } }
-                  }}
-                  whileHover={{ y: -5 }}
-                  key={company.id}
-                  className="h-full"
-                >
-                  <Link
-                    to={`/products?company=${company.id}`}
-                    className="brand-card-reveal group flex h-full flex-col border border-[#ded8cc] rounded-3xl bg-[#fffdf8] p-6 shadow-sm transition-all duration-300 hover:border-[#b7774f] hover:shadow-xl sm:p-8"
-                  >
-                    <span className="mb-7 block h-1 w-12 rounded-full bg-[#b7774f] transition-all duration-300 group-hover:w-20" />
-                    <h3 className="display-serif break-words text-[1.85rem] leading-none text-stone-950 sm:text-3xl">
-                      {company.name}
-                    </h3>
-                    <p className="mt-5 line-clamp-4 text-sm leading-6 text-stone-600">
-                      {company.description}
-                    </p>
-                  </Link>
-                </motion.div>
-              ))}
+              <BrandMarquee companies={companies} />
             </motion.div>
           ) : null}
         </div>
       </section>
 
       {/* Trust Section */}
-      <section className="section-padding border-b border-[#ded8cc] bg-stone-950 text-[#fffdf8]">
-        <div className="container-shell grid gap-12 lg:grid-cols-[0.8fr_1.2fr]">
+      <section className="border-b border-[#ded8cc] bg-stone-950 py-12 text-[#fffdf8] sm:py-14 lg:py-16">
+        <div className="container-shell grid gap-8 lg:grid-cols-[0.8fr_1.2fr] lg:gap-12">
           <motion.div 
             initial="hidden"
             whileInView="visible"
@@ -241,7 +218,7 @@ export default function Home() {
             variants={fadeUpVariant}
             className="w-full min-w-0"
           >
-            <p className="micro-copy text-[#d7b08d]">
+            <p className="micro-copy section-eyebrow text-[#d7b08d]">
               {pageContent.trust_eyebrow}
             </p>
             <h2 className="display-serif section-title mt-5 text-white/90">
@@ -278,7 +255,7 @@ export default function Home() {
       </section>
 
       {/* CTA Section */}
-      <section className="bg-[#70443d] py-20 text-[#fffdf8] relative overflow-hidden">
+      <section className="bg-[#70443d] py-12 text-[#fffdf8] relative overflow-hidden sm:py-14 lg:py-16">
         <div className="absolute inset-0 opacity-10 pointer-events-none">
            <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
               <defs>
@@ -298,7 +275,7 @@ export default function Home() {
           className="container-shell relative z-10 flex flex-col gap-8 md:flex-row md:items-center md:justify-between"
         >
           <div className="w-full min-w-0">
-            <p className="micro-copy text-[#f1d1b8]">{pageContent.cta_eyebrow}</p>
+            <p className="micro-copy section-eyebrow text-[#f1d1b8]">{pageContent.cta_eyebrow}</p>
             <h2 className="display-serif mt-4 max-w-3xl text-5xl leading-none sm:text-6xl md:text-7xl">
               {pageContent.cta_title}
             </h2>
