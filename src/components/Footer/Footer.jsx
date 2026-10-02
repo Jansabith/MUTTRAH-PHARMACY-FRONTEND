@@ -1,6 +1,13 @@
 import { Link } from 'react-router-dom'
 import { useEffect, useState } from 'react'
-import { websiteAPI } from '../../services/api'
+import { getMediaUrl, websiteAPI } from '../../services/api'
+
+// Dark layer over the optional background image ("Background shade" in the admin)
+const SHADE_CLASSES = {
+  light: 'bg-stone-950/55',
+  medium: 'bg-stone-950/75',
+  strong: 'bg-stone-950/90',
+}
 
 export default function Footer() {
   const [footerContent, setFooterContent] = useState(null)
@@ -41,15 +48,34 @@ export default function Footer() {
 
   const quickLinks = footerContent.quick_links || []
   const socialLinks = footerContent.social_links || []
+  // Each detail can have more than one value (e.g. two emails), one per line
   const contactDetails = [
-    { label: 'Address', value: footerContent.address },
-    { label: 'Email', value: footerContent.email },
-    { label: 'Mobile', value: footerContent.phone },
-    { label: 'Telephone', value: footerContent.telephone },
-  ].filter((item) => item.value)
+    { label: 'Address', values: [footerContent.address] },
+    { label: 'Email', values: [footerContent.email, footerContent.email_2] },
+    { label: 'Mobile', values: [footerContent.phone] },
+    { label: 'Telephone', values: [footerContent.telephone] },
+  ]
+    .map((item) => ({ ...item, values: item.values.filter(Boolean) }))
+    .filter((item) => item.values.length)
+  const backgroundUrl = getMediaUrl(footerContent.background_image)
 
   return (
-    <footer className="bg-stone-950 text-[#fffdf8]">
+    <footer className="relative isolate overflow-hidden bg-stone-950 text-[#fffdf8]">
+      {backgroundUrl ? (
+        <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10">
+          <img
+            src={backgroundUrl}
+            alt=""
+            loading="lazy"
+            className="h-full w-full object-cover"
+          />
+          <div
+            className={`absolute inset-0 ${SHADE_CLASSES[footerContent.background_shade] || SHADE_CLASSES.medium}`}
+          />
+          {/* Deeper at the top and bottom so the edges blend into the page */}
+          <div className="absolute inset-0 bg-gradient-to-b from-stone-950/70 via-transparent to-stone-950/80" />
+        </div>
+      ) : null}
       <div className="container-shell grid gap-10 py-16 md:grid-cols-[1.35fr_0.65fr_1fr]">
         <div>
           <p className="display-serif text-6xl leading-none md:text-7xl">
@@ -97,9 +123,11 @@ export default function Footer() {
                 <p className="text-[0.68rem] font-bold uppercase tracking-[0.16em] text-[#d7b08d]">
                   {item.label}
                 </p>
-                <p className="mt-1 break-words text-sm leading-6 text-stone-300">
-                  {item.value}
-                </p>
+                {item.values.map((value) => (
+                  <p key={value} className="mt-1 break-words text-sm leading-6 text-stone-300">
+                    {value}
+                  </p>
+                ))}
               </div>
             ))}
           </div>

@@ -76,7 +76,7 @@ export default function About() {
             viewport={{ once: true, margin: "-100px" }}
             variants={fadeUpVariant}
           >
-            <p className="micro-copy text-[#70443d]">{pageContent.eyebrow}</p>
+            <p className="micro-copy section-eyebrow text-[#70443d]">{pageContent.eyebrow}</p>
             <h1 className="display-serif page-title mt-5 text-stone-950 max-w-4xl mx-auto">
               {pageContent.title}
             </h1>
@@ -138,7 +138,7 @@ export default function About() {
             variants={fadeUpVariant}
             className="bg-[#24211d] rounded-3xl p-8 sm:p-12 border border-white/10 hover:border-white/20 transition-colors shadow-2xl"
           >
-            <p className="micro-copy text-[#d7b08d]">
+            <p className="micro-copy section-eyebrow text-[#d7b08d]">
               {pageContent.mission_title}
             </p>
             <h2 className="display-serif mt-6 text-4xl leading-tight sm:mt-8 sm:text-5xl md:text-6xl text-white/90">
@@ -149,7 +149,7 @@ export default function About() {
             variants={fadeUpVariant}
             className="bg-[#24211d] rounded-3xl p-8 sm:p-12 border border-white/10 hover:border-white/20 transition-colors shadow-2xl"
           >
-            <p className="micro-copy text-[#d7b08d]">
+            <p className="micro-copy section-eyebrow text-[#d7b08d]">
               {pageContent.vision_title}
             </p>
             <h2 className="display-serif mt-6 text-4xl leading-tight sm:mt-8 sm:text-5xl md:text-6xl text-white/90">
@@ -198,7 +198,7 @@ export default function About() {
             viewport={{ once: true, margin: "-100px" }}
             variants={fadeUpVariant}
           >
-            <p className="micro-copy text-[#70443d]">
+            <p className="micro-copy section-eyebrow text-[#70443d]">
               {pageContent.brands_eyebrow}
             </p>
             <h2 className="display-serif section-title mt-5 text-stone-950 max-w-3xl mx-auto">
@@ -215,21 +215,41 @@ export default function About() {
                 variants={staggerContainer}
                 className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4"
               >
-                {companies.slice(0, 8).map((company) => (
-                  <motion.article 
-                    key={company.id} 
-                    variants={fadeUpVariant}
-                    whileHover={{ scale: 1.02 }}
-                    className="bg-[#fffdf8] rounded-2xl p-6 border border-[#ded8cc] shadow-sm hover:shadow-md transition-all duration-300"
-                  >
-                    <h3 className="display-serif text-[1.85rem] leading-none text-stone-950 sm:text-3xl">
-                      {company.name}
-                    </h3>
-                    <p className="mt-4 line-clamp-2 text-sm leading-6 text-stone-600">
-                      {company.description || 'Managed in Django Admin.'}
-                    </p>
-                  </motion.article>
-                ))}
+                {companies.slice(0, 8).map((company) => {
+                  const logoUrl = getMediaUrl(company.logo)
+                  return (
+                    <motion.article
+                      key={company.id}
+                      variants={fadeUpVariant}
+                      whileHover={{ scale: 1.02 }}
+                      className="bg-[#fffdf8] rounded-2xl p-6 border border-[#ded8cc] shadow-sm hover:shadow-md transition-all duration-300"
+                    >
+                      {/* Logo from the Company admin; the name shows instead until one is uploaded */}
+                      {logoUrl ? (
+                        <>
+                          <div className="flex h-24 items-center justify-center">
+                            <img
+                              src={logoUrl}
+                              alt={company.name}
+                              loading="lazy"
+                              className="max-h-full max-w-[80%] object-contain mix-blend-multiply"
+                            />
+                          </div>
+                          <h3 className="mt-3 text-sm font-bold uppercase tracking-wider text-stone-800">
+                            {company.name}
+                          </h3>
+                        </>
+                      ) : (
+                        <h3 className="display-serif text-[1.85rem] leading-none text-stone-950 sm:text-3xl">
+                          {company.name}
+                        </h3>
+                      )}
+                      <p className="mt-4 line-clamp-2 text-sm leading-6 text-stone-600">
+                        {company.description || 'Managed in Django Admin.'}
+                      </p>
+                    </motion.article>
+                  )
+                })}
               </motion.div>
             ) : null}
           </div>
@@ -245,7 +265,7 @@ export default function About() {
             viewport={{ once: true, margin: "-100px" }}
             variants={fadeUpVariant}
           >
-            <p className="micro-copy text-[#70443d]">
+            <p className="micro-copy section-eyebrow text-[#70443d]">
               {pageContent.location_eyebrow || 'Our Location'}
             </p>
             <h2 className="display-serif section-title mt-5 text-stone-950 max-w-3xl mx-auto">
@@ -299,9 +319,6 @@ export default function About() {
             <h2 className="display-serif text-5xl leading-none sm:text-6xl">
               Explore the live catalog.
             </h2>
-            <p className="mt-4 text-[#f1d1b8] text-lg">
-              Every product card is API-driven from the Django backend.
-            </p>
           </div>
           <Link
             to="/products"

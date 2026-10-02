@@ -28,7 +28,7 @@ export default function NotFound() {
           className="h-20 w-20 object-contain sm:h-24 sm:w-24"
         />
 
-        <p className="micro-copy mt-8 text-[#70443d]">Error 404</p>
+        <p className="micro-copy section-eyebrow mt-8 text-[#70443d]">Error 404</p>
         <h1 className="display-serif mt-4 text-5xl leading-none text-stone-950 sm:text-7xl">
           Page not found
         </h1>
