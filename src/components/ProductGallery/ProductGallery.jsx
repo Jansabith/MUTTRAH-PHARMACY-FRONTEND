@@ -10,7 +10,7 @@ export default function ProductGallery({ images, youtubeId, productName }) {
   const trackRef = useRef(null)
 
   const slides = [
-    ...images.map((src) => ({ type: 'image', src })),
+    ...images.map((image) => ({ type: 'image', ...image })),
     ...(youtubeId ? [{ type: 'video' }] : []),
   ]
   const total = slides.length
@@ -68,7 +68,7 @@ export default function ProductGallery({ images, youtubeId, productName }) {
                 >
                   <img
                     src={slide.src}
-                    alt={`${productName}${index > 0 ? ` – image ${index + 1}` : ''}`}
+                    alt={slide.alt}
                     className="max-h-full max-w-full rounded-2xl object-contain"
                     loading={index === 0 ? 'eager' : 'lazy'}
                     draggable={false}

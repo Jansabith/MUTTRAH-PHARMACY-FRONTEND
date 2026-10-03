@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { getMediaUrl } from '../../services/api'
+import { getMediaUrl, urlName } from '../../services/api'
 import useMarquee from '../../hooks/useMarquee'
 
 const AUTO_SPEED = 40 // px per second
@@ -41,7 +41,7 @@ function BrandCard({ company, isClone }) {
       aria-hidden={isClone || undefined}
     >
       <Link
-        to={`/products?company=${company.id}`}
+        to={`/products?company=${urlName(company)}`}
         tabIndex={isClone ? -1 : undefined}
         className="group flex h-full flex-col rounded-2xl border border-[#ece4d8] bg-[#fffdf8] p-5 shadow-sm transition-all duration-500 ease-out hover:-translate-y-1.5 hover:border-[#c9a184] hover:shadow-[0_18px_40px_-18px_rgba(112,68,61,0.35)] sm:p-6"
       >

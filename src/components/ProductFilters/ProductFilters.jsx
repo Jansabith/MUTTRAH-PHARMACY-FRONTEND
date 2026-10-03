@@ -1,4 +1,5 @@
 import SearchBar from '../SearchBar/SearchBar'
+import { urlName } from '../../services/api'
 
 export default function ProductFilters({
   companies,
@@ -57,7 +58,7 @@ export default function ProductFilters({
           >
             <option value="">Choose company</option>
             {companies.map((company) => (
-              <option key={company.id} value={company.id}>
+              <option key={company.id} value={urlName(company)}>
                 {company.name}
               </option>
             ))}
@@ -76,7 +77,7 @@ export default function ProductFilters({
             >
               <option value="">All company lines</option>
               {companyLines.map((line) => (
-                <option key={line.id} value={line.id}>
+                <option key={line.id} value={urlName(line)}>
                   {line.name}
                 </option>
               ))}
@@ -98,7 +99,7 @@ export default function ProductFilters({
               {loadingCategories ? 'Loading categories' : 'All categories'}
             </option>
             {categories.map((category) => (
-              <option key={category.id} value={category.id}>
+              <option key={category.id} value={urlName(category)}>
                 {category.name}
               </option>
             ))}

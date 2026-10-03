@@ -37,6 +37,14 @@ export const apiOrigin = (() => {
   }
 })()
 
+// Name used in website addresses, e.g. "tynor" in /products?company=tynor
+// (the number only as a fallback for anything without one)
+export const urlName = (item) => item?.slug || (item?.id != null ? String(item.id) : '')
+
+// True when an address value (a name, or an old number) points to `item`
+export const matchesUrlName = (item, value) =>
+  Boolean(item && value) && (item.slug === value || String(item.id) === String(value))
+
 export const getMediaUrl = (path) => {
   if (!path) return ''
   if (path.startsWith('http://') || path.startsWith('https://')) return path
@@ -44,11 +52,22 @@ export const getMediaUrl = (path) => {
   return `${apiOrigin}/${path}`
 }
 
-export const getGalleryImages = (product) => {
-  const gallery = Array.isArray(product?.gallery) ? product.gallery : []
-  return gallery
-    .map((item) => getMediaUrl(item?.image || item))
-    .filter(Boolean)
+// Main image first, then the gallery, as { src, alt }. The backend sends the
+// alt texts: "TYNOR Knee Cap Air – Knee Supports" for the main image, and the
+// editor's own text (or "TYNOR Knee Cap Air") for gallery photos.
+export const getProductImages = (product) => {
+  if (!product) return []
+  const gallery = Array.isArray(product.gallery) ? product.gallery : []
+  const images = [
+    { src: getMediaUrl(product.image), alt: product.image_alt || product.name },
+    ...gallery.map((item) => ({
+      src: getMediaUrl(item?.image || item),
+      alt: item?.alt || product.name,
+    })),
+  ].filter((image) => image.src)
+  // The same picture can be both main image and in the gallery: show it once
+  const seen = new Set()
+  return images.filter((image) => !seen.has(image.src) && seen.add(image.src))
 }
 
 const splitSizes = (value) => {

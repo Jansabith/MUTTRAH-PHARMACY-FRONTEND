@@ -3,8 +3,8 @@ import { Link, useParams } from 'react-router-dom'
 import Loader from '../../components/Loader/Loader'
 import ProductCard from '../../components/ProductCard/ProductCard'
 import {
-  getGalleryImages,
   getMediaUrl,
+  getProductImages,
   getProductSizes,
   productsAPI,
 } from '../../services/api'
@@ -64,11 +64,7 @@ export default function ProductDetail() {
     }
   }, [slug])
 
-  const galleryImages = useMemo(() => {
-    if (!product) return []
-    const images = [getMediaUrl(product.image), ...getGalleryImages(product)]
-    return [...new Set(images.filter(Boolean))]
-  }, [product])
+  const galleryImages = useMemo(() => getProductImages(product), [product])
 
   const youtubeId = getYouTubeId(product?.youtube_url)
 

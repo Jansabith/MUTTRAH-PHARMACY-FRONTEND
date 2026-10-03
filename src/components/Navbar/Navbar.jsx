@@ -1,6 +1,6 @@
 import { Suspense, lazy, useCallback, useEffect, useRef, useState } from 'react'
 import { Link, NavLink } from 'react-router-dom'
-import { companiesAPI } from '../../services/api'
+import { companiesAPI, urlName } from '../../services/api'
 import useBackdropTheme from '../../hooks/useBackdropTheme'
 
 // The search panel is downloaded only when someone is about to use it
@@ -255,7 +255,7 @@ export default function Navbar() {
                             className="relative"
                           >
                             <Link
-                              to={`/products?company=${company.id}`}
+                              to={`/products?company=${urlName(company)}`}
                               className={`block rounded-2xl px-4 py-3 text-sm font-bold transition-all duration-300 ${activeCompanyHover?.id === company.id ? 'bg-[#f8f5ee] text-[#b7774f] shadow-sm' : 'text-stone-600 hover:bg-[#f8f5ee] hover:text-stone-950'}`}
                             >
                               {company.name}
@@ -281,7 +281,7 @@ export default function Navbar() {
                           getCompanyLines(activeCompanyHover).map((line) => (
                             <Link
                               key={line.id}
-                              to={`/products?company=${activeCompanyHover.id}&company_line=${line.id}`}
+                              to={`/products?company=${urlName(activeCompanyHover)}&company_line=${urlName(line)}`}
                               className="block rounded-xl px-4 py-2.5 text-sm font-semibold text-stone-600 transition hover:bg-[#f8f5ee] hover:text-stone-950"
                             >
                               {line.name}
@@ -463,7 +463,7 @@ export default function Navbar() {
                   return (
                     <div key={company.id} className="mb-2">
                       <Link
-                        to={`/products?company=${company.id}`}
+                        to={`/products?company=${urlName(company)}`}
                         className="block rounded-xl px-4 py-2.5 text-sm font-bold text-stone-800 bg-stone-100/50 transition hover:bg-stone-200"
                         onClick={() => setOpen(false)}
                       >
@@ -474,7 +474,7 @@ export default function Navbar() {
                           {companyLines.map((line) => (
                             <Link
                               key={line.id}
-                              to={`/products?company=${company.id}&company_line=${line.id}`}
+                              to={`/products?company=${urlName(company)}&company_line=${urlName(line)}`}
                               className="block rounded-lg px-4 py-2 text-xs font-semibold text-stone-600 transition hover:bg-stone-100"
                               onClick={() => setOpen(false)}
                             >
