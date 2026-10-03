@@ -7,17 +7,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <!-- Start downloading the loading-screen logo right away, before the app's JavaScript runs -->
     <link rel="preload" href="/muttrah_logo_480.webp" as="image" type="image/webp" fetchpriority="high" />
-    <title>Muttrah Pharmacy | Medical &amp; Orthopedic Distributor in Oman</title>
-    <meta name="description" content="Muttrah Pharmacy is a trusted pharmaceutical and orthopedic healthcare supplier in Muscat, Oman, serving clinics, hospitals, and pharmacies with quality medical products." />
+    <!--
+      Fallback tags below, for visitors whose browser never runs the app's
+      JavaScript: WhatsApp/Facebook/LinkedIn link previews, and search
+      engines that only read the raw HTML. Once the app starts, the SEO
+      component (src/components/SEO/SEO.jsx) removes every tag marked
+      data-default="true" and replaces it with the correct one for the
+      actual page, so a real visitor or Google never sees these instead.
+    -->
+    <title data-default="true">Muttrah Pharmacy | Medical &amp; Orthopedic Distributor in Oman</title>
+    <meta data-default="true" name="description" content="Muttrah Pharmacy is a trusted pharmaceutical and orthopedic healthcare supplier in Muscat, Oman, serving clinics, hospitals, and pharmacies with quality medical products." />
 
-    <!-- Link previews (WhatsApp, Facebook, LinkedIn) read these tags directly -->
-    <meta property="og:type" content="website" />
+    <meta property="og:type" data-default="true" content="website" />
     <meta property="og:site_name" content="Muttrah Pharmacy" />
-    <meta property="og:title" content="Muttrah Pharmacy | Medical &amp; Orthopedic Distributor in Oman" />
-    <meta property="og:description" content="Trusted pharmaceutical and orthopedic healthcare supplier in Muscat, Oman." />
-    <meta property="og:url" content="https://muttrahpharmacy.com/" />
-    <meta property="og:image" content="https://muttrahpharmacy.com/muttrah_logo_480.webp" />
-    <meta name="twitter:card" content="summary_large_image" />
+    <meta property="og:title" data-default="true" content="Muttrah Pharmacy | Medical &amp; Orthopedic Distributor in Oman" />
+    <meta property="og:description" data-default="true" content="Trusted pharmaceutical and orthopedic healthcare supplier in Muscat, Oman." />
+    <meta property="og:url" data-default="true" content="https://muttrahpharmacy.com/" />
+    <meta property="og:image" data-default="true" content="https://muttrahpharmacy.com/muttrah_logo_480.webp" />
+    <meta name="twitter:card" data-default="true" content="summary_large_image" />
   </head>
   <body>
     <div id="root"></div>

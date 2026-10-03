@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { Link, useNavigate } from 'react-router-dom'
-import { companiesAPI, getMediaUrl, productsAPI } from '../../services/api'
+import { companiesAPI, getMediaUrl, productsAPI, urlName } from '../../services/api'
 
 const MIN_LENGTH = 2
 const DEBOUNCE_MS = 200
@@ -266,7 +266,7 @@ export default function SearchPanel({ open, onClose }) {
                 {brands.map((brand) => (
                   <Link
                     key={brand.id}
-                    to={`/products?company=${brand.id}`}
+                    to={`/products?company=${urlName(brand)}`}
                     onClick={onClose}
                     className="rounded-full border border-[#e4dacb] bg-white px-4 py-2 text-xs font-bold uppercase tracking-wider text-stone-700 transition hover:border-[#b7774f] hover:bg-[#b7774f] hover:text-white"
                   >
@@ -375,7 +375,7 @@ export default function SearchPanel({ open, onClose }) {
                       {data.brands.map((brand) => (
                         <Link
                           key={brand.id}
-                          to={`/products?company=${brand.id}`}
+                          to={`/products?company=${urlName(brand)}`}
                           onClick={onClose}
                           className="block rounded-xl px-2.5 py-2 text-sm font-semibold text-stone-800 transition hover:bg-white hover:text-[#b7774f]"
                         >
@@ -390,7 +390,7 @@ export default function SearchPanel({ open, onClose }) {
                       {data.categories.map((category) => (
                         <Link
                           key={category.id}
-                          to={`/products?category=${category.id}`}
+                          to={`/products?category=${urlName(category)}`}
                           onClick={onClose}
                           className="block rounded-xl px-2.5 py-2 transition hover:bg-white"
                         >

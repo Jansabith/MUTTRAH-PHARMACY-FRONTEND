@@ -3,7 +3,7 @@ import { useLocation, useSearchParams } from 'react-router-dom'
 import Loader from '../../components/Loader/Loader'
 import ProductCard from '../../components/ProductCard/ProductCard'
 import ProductFilters from '../../components/ProductFilters/ProductFilters'
-import { categoriesAPI, companiesAPI, productsAPI } from '../../services/api'
+import { categoriesAPI, companiesAPI, matchesUrlName, productsAPI, urlName } from '../../services/api'
 import { AnimatePresence, motion } from 'framer-motion'
 import SEO from '../../components/SEO/SEO'
 
@@ -82,10 +82,7 @@ export default function Products() {
     }
   }, [filtersOpen])
   const selectedCompanyData = useMemo(
-    () =>
-      companies.find(
-        (company) => String(company.id) === String(selectedCompany),
-      ),
+    () => companies.find((company) => matchesUrlName(company, selectedCompany)),
     [companies, selectedCompany],
   )
   const companyLines = useMemo(
@@ -95,6 +92,34 @@ export default function Products() {
       ),
     [selectedCompanyData],
   )
+  const selectedCompanyLineData = useMemo(
+    () => companyLines.find((line) => matchesUrlName(line, selectedCompanyLine)),
+    [companyLines, selectedCompanyLine],
+  )
+  const selectedCategoryData = useMemo(
+    () => categories.find((category) => matchesUrlName(category, selectedCategory)),
+    [categories, selectedCategory],
+  )
+
+  // Old links used numbers (?company=7); once the lists are loaded, switch the
+  // address to names (?company=tynor) so shared links and Google see the name
+  useEffect(() => {
+    const next = new URLSearchParams(searchParams)
+    let changed = false
+    const toName = (key, list) => {
+      const value = next.get(key)
+      if (!value || !/^\d+$/.test(value)) return
+      const match = list.find((item) => String(item.id) === value)
+      if (match?.slug) {
+        next.set(key, urlName(match))
+        changed = true
+      }
+    }
+    toName('company', companies)
+    toName('company_line', companyLines)
+    toName('category', categories)
+    if (changed) setSearchParams(next, { replace: true })
+  }, [companies, companyLines, categories, searchParams, setSearchParams])
 
   useEffect(() => {
     let active = true
@@ -234,19 +259,62 @@ export default function Products() {
     onClear: clearFilters,
   }
 
-  const dynamicTitle = selectedCompanyData
-    ? `${selectedCompanyData.name} Medical Catalog` 
-    : "Medical Product Catalog"
-  const dynamicDesc = selectedCompanyData 
-    ? `Explore medical supplies and products from ${selectedCompanyData.name} distributed by Muttrah Pharmacy in Oman.`
-    : "Browse our comprehensive wholesale catalog of pharmaceuticals, orthopedic implants, and rehabilitation equipment at Muttrah Pharmacy."
+  // The category (or, failing that, the line) a visitor picked, for the
+  // title/description below
+  const secondaryFilterData = selectedCategoryData || selectedCompanyLineData
+  const secondaryLabel = secondaryFilterData?.name
+  // Leave the brand name out of the title when the category/line name
+  // already starts with it, e.g. company "TYNOR" + line "TYNOR LIFE" should
+  // read "TYNOR LIFE Catalog", not "TYNOR TYNOR LIFE Catalog"
+  const secondaryStartsWithBrand =
+    selectedCompanyData && secondaryLabel?.toLowerCase().startsWith(selectedCompanyData.name.toLowerCase())
+
+  let dynamicTitle = 'Medical Product Catalog'
+  if (selectedCompanyData && secondaryLabel) {
+    dynamicTitle = secondaryStartsWithBrand
+      ? `${secondaryLabel} Catalog`
+      : `${selectedCompanyData.name} ${secondaryLabel} Catalog`
+  } else if (selectedCompanyData) {
+    dynamicTitle = `${selectedCompanyData.name} Medical Catalog`
+  } else if (secondaryLabel) {
+    dynamicTitle = `${secondaryLabel} Catalog`
+  }
+
+  let dynamicDesc =
+    'Browse our comprehensive wholesale catalog of pharmaceuticals, orthopedic implants, and rehabilitation equipment at Muttrah Pharmacy.'
+  if (selectedCompanyData && secondaryLabel) {
+    dynamicDesc = secondaryStartsWithBrand
+      ? `Explore ${secondaryLabel} products, distributed by Muttrah Pharmacy in Oman.`
+      : `Explore ${selectedCompanyData.name} ${secondaryLabel} products, distributed by Muttrah Pharmacy in Oman.`
+  } else if (selectedCompanyData) {
+    dynamicDesc = `Explore medical supplies and products from ${selectedCompanyData.name} distributed by Muttrah Pharmacy in Oman.`
+  } else if (secondaryLabel) {
+    dynamicDesc = `Browse our range of ${secondaryLabel} products distributed by Muttrah Pharmacy in Oman.`
+  }
+
+  // The "official" address for this exact filter combination: only the
+  // brand/line/category filters, in a fixed order, never the search box or
+  // any tracking params, so Google always credits the same URL
+  const canonicalParams = new URLSearchParams()
+  if (selectedCompany) canonicalParams.set('company', selectedCompanyData ? urlName(selectedCompanyData) : selectedCompany)
+  if (selectedCompanyLine) {
+    canonicalParams.set('company_line', selectedCompanyLineData ? urlName(selectedCompanyLineData) : selectedCompanyLine)
+  }
+  if (selectedCategory) canonicalParams.set('category', selectedCategoryData ? urlName(selectedCategoryData) : selectedCategory)
+  const canonicalQuery = canonicalParams.toString()
+  const canonicalUrl = `${window.location.origin}/products${canonicalQuery ? `?${canonicalQuery}` : ''}`
+
+  // A search result is a thin, ever-changing page - keep it out of Google
+  const isSearchResults = Boolean(searchParams.get('search'))
 
   return (
     <section className="section-padding bg-[#f8f5ee] min-h-screen">
-      <SEO 
+      <SEO
         title={dynamicTitle}
         description={dynamicDesc}
         keywords={selectedCompanyData ? `Muttrah Pharmacy, ${selectedCompanyData.name}, medicine Oman` : null}
+        canonical={canonicalUrl}
+        noIndex={isSearchResults}
       />
       <div className="container-shell">
         <motion.div 

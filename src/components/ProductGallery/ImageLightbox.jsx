@@ -115,9 +115,11 @@ export default function ImageLightbox({ images, startIndex, productName, onClose
             style={zoomed ? { width: `${ZOOM_SCALE * 100}%`, height: `${ZOOM_SCALE * 100}%` } : { width: '100%', height: '100%' }}
           >
             <img
-              key={images[index]}
-              src={images[index]}
-              alt={`${productName} – image ${index + 1}`}
+              key={images[index].src}
+              src={images[index].src}
+              // "image 2 of 3" tells screen reader users which photo is open;
+              // this viewer only opens on click, so it has no SEO effect
+              alt={`${images[index].alt} (image ${index + 1} of ${total})`}
               onClick={handleTap}
               className={[
                 'max-h-full max-w-full touch-manipulation select-none object-contain',
