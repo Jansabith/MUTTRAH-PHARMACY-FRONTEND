@@ -36,14 +36,23 @@ export default function Products() {
   const [debouncedSearch, setDebouncedSearch] = useState(search)
   const [page, setPage] = useState(1)
 
-  // A new navbar search while already on this page fills the box again
+  // A new navbar search or external navigation while already on this page
   const [handledLocationKey, setHandledLocationKey] = useState(location.key)
   if (location.key !== handledLocationKey) {
     setHandledLocationKey(location.key)
+    
     const navbarSearch = location.state?.search
+    const fromLocal = location.state?.fromLocal
+    
     if (typeof navbarSearch === 'string') {
       setSearch(navbarSearch)
       setDebouncedSearch(navbarSearch)
+      setPage(1)
+    } else if (!fromLocal) {
+      // External navigation (e.g. clicking a Navbar link). Reset local states.
+      const urlSearch = searchParams.get('search') || ''
+      setSearch(urlSearch)
+      setDebouncedSearch(urlSearch)
       setPage(1)
     }
   }
@@ -118,7 +127,7 @@ export default function Products() {
     toName('company', companies)
     toName('company_line', companyLines)
     toName('category', categories)
-    if (changed) setSearchParams(next, { replace: true })
+    if (changed) setSearchParams(next, { replace: true, state: { fromLocal: true } })
   }, [companies, companyLines, categories, searchParams, setSearchParams])
 
   useEffect(() => {
@@ -216,7 +225,7 @@ export default function Products() {
   // Frontend filtering logic has been moved to backend search
 
   const clearFilters = () => {
-    setSearchParams({})
+    setSearchParams({}, { state: { fromLocal: true } })
     setSearch('')
     setPage(1)
   }
@@ -238,7 +247,7 @@ export default function Products() {
     } else {
       nextParams.delete(key)
     }
-    setSearchParams(nextParams)
+    setSearchParams(nextParams, { state: { fromLocal: true } })
     setPage(1)
   }
 
