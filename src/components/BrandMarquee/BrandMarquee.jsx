@@ -51,7 +51,7 @@ function BrandCard({ company, isClone }) {
             <img
               src={logoUrl}
               alt={company.name}
-              loading="lazy"
+              loading="eager"
               className="max-h-full max-w-[85%] object-contain mix-blend-multiply transition-transform duration-500 ease-out group-hover:scale-110"
             />
           ) : (
