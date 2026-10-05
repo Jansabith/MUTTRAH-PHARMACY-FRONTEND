@@ -74,7 +74,7 @@ function ShowcaseCard({ product, isNew, isClone }) {
           <img
             src={imageUrl}
             alt={product.image_alt || product.name}
-            loading="lazy"
+            loading="eager"
             className="h-full w-full object-contain p-4 mix-blend-multiply transition-transform duration-700 ease-out group-hover:scale-[1.06]"
           />
         ) : (

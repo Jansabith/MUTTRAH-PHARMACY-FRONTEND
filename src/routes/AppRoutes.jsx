@@ -3,7 +3,8 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import MainLayout from '../layouts/MainLayout'
 const About = React.lazy(() => import('../pages/About/About'))
 const Contact = React.lazy(() => import('../pages/Contact/Contact'))
-const Home = React.lazy(() => import('../pages/Home/Home'))
+// Home is imported eagerly — it's the landing page and must render instantly
+import Home from '../pages/Home/Home'
 const ProductDetail = React.lazy(() => import('../pages/ProductDetail/ProductDetail'))
 const Products = React.lazy(() => import('../pages/Products/Products'))
 const NotFound = React.lazy(() => import('../pages/NotFound/NotFound'))
@@ -16,11 +17,7 @@ export default function AppRoutes() {
       <ScrollToTop />
       <Routes>
         <Route element={<MainLayout />}>
-          <Route index element={
-            <Suspense fallback={<Loader />}>
-              <Home />
-            </Suspense>
-          } />
+          <Route index element={<Home />} />
           <Route path="/products" element={
             <Suspense fallback={<Loader />}>
               <Products />

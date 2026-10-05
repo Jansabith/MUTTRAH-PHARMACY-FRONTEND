@@ -59,9 +59,9 @@ export default function Home() {
     }
   }, [])
 
-  if (!pageContent) {
-    return <Loader label="Loading Muttrah Pharmacy..." />
-  }
+  // Render the page shell immediately — content fills in when the API responds.
+  // This avoids the jarring full-screen skeleton that previously blocked paint.
+  const ready = Boolean(pageContent)
 
   const localBusinessSchema = {
     '@context': 'https://schema.org',
@@ -70,7 +70,7 @@ export default function Home() {
     'image': 'https://muttrahpharmacy.com/muttrah_logo_480.webp',
     '@id': 'https://muttrahpharmacy.com/#organization',
     'url': 'https://muttrahpharmacy.com',
-    'telephone': `+${pageContent.whatsapp_number || '96899793939'}`,
+    'telephone': `+${pageContent?.whatsapp_number || '96899793939'}`,
     'priceRange': '$$',
     'address': {
       '@type': 'PostalAddress',
@@ -96,34 +96,33 @@ export default function Home() {
   return (
     <main className="overflow-hidden">
       <SEO
-        title={pageContent.meta_title}
-        description={pageContent.meta_description}
-        keywords={pageContent.meta_keywords}
+        title={pageContent?.meta_title}
+        description={pageContent?.meta_description}
+        keywords={pageContent?.meta_keywords}
         schema={localBusinessSchema}
       />
       {/* AEO Context for AI Bots */}
       <p className="sr-only">
         Muttrah Pharmacy is the leading wholesale distributor of medical supplies and orthopedic implants in Oman. We supply pharmacies, clinics, and hospitals with high-quality pharmaceutical and orthopedic products.
       </p>
-      <HeroSection content={pageContent} />
+      <HeroSection content={pageContent || {}} />
 
       {/* Intro & Features Section */}
       <section className="border-b border-[#ded8cc] bg-[#fbf9f4] py-10 sm:py-12 lg:py-14">
         <div className="container-shell grid items-center gap-10 lg:grid-cols-[1.15fr_1fr] lg:gap-16">
           <motion.div
             initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-100px" }}
+            animate="visible"
             variants={fadeUpVariant}
             className="w-full min-w-0"
           >
             <p className="micro-copy section-eyebrow text-[#70443d]">
-              {pageContent.intro_eyebrow}
+              {pageContent?.intro_eyebrow}
             </p>
             <h2 className="display-serif mt-5 max-w-3xl text-[2rem] leading-[1.1] text-stone-950 sm:text-[2.5rem] xl:text-[2.85rem]">
-              {pageContent.intro_title}
+              {pageContent?.intro_title}
             </h2>
-            {pageContent.intro_description && (
+            {pageContent?.intro_description && (
               <p className="mt-6 max-w-2xl text-[17px] font-medium leading-8 text-stone-700 sm:text-lg">
                 {pageContent.intro_description}
               </p>
@@ -131,8 +130,7 @@ export default function Home() {
           </motion.div>
           <motion.div
             initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-100px" }}
+            animate="visible"
             variants={staggerContainer}
             className="grid w-full min-w-0 gap-4 sm:grid-cols-2"
           >
@@ -161,21 +159,20 @@ export default function Home() {
         <div className="container-shell">
           <motion.div
             initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-100px" }}
+            animate="visible"
             variants={fadeUpVariant}
             className="mb-7 flex flex-col gap-6 md:flex-row md:items-end md:justify-between"
           >
             <div className="w-full min-w-0 max-w-3xl">
               <p className="micro-copy section-eyebrow text-[#70443d]">
-                {pageContent.brands_eyebrow}
+                {pageContent?.brands_eyebrow}
               </p>
               <h2 className="display-serif mt-5 text-[2rem] leading-[1.1] text-stone-950 sm:text-[2.5rem] xl:text-[2.85rem]">
-                {pageContent.brands_title}
+                {pageContent?.brands_title}
               </h2>
-              {pageContent.brands_description && (
+              {pageContent?.brands_description && (
                 <p className="mt-5 text-[17px] font-medium leading-8 text-stone-700 sm:text-lg">
-                  {pageContent.brands_description}
+                  {pageContent?.brands_description}
                 </p>
               )}
             </div>
@@ -197,8 +194,7 @@ export default function Home() {
           {!loading && !error && companies.length ? (
             <motion.div
               initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, margin: "-100px" }}
+              animate="visible"
               variants={fadeUpVariant}
               className="-mx-4 sm:mx-0"
             >
@@ -213,23 +209,21 @@ export default function Home() {
         <div className="container-shell grid gap-8 lg:grid-cols-[0.8fr_1.2fr] lg:gap-12">
           <motion.div 
             initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-100px" }}
+            animate="visible"
             variants={fadeUpVariant}
             className="w-full min-w-0"
           >
             <p className="micro-copy section-eyebrow text-[#d7b08d]">
-              {pageContent.trust_eyebrow}
+              {pageContent?.trust_eyebrow}
             </p>
             <h2 className="display-serif section-title mt-5 text-white/90">
-              {pageContent.trust_title}
+              {pageContent?.trust_title}
             </h2>
           </motion.div>
 
           <motion.div 
             initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-100px" }}
+            animate="visible"
             variants={staggerContainer}
             className="grid gap-6 sm:grid-cols-2 w-full min-w-0"
           >
@@ -269,22 +263,21 @@ export default function Home() {
 
         <motion.div 
           initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-100px" }}
+          animate="visible"
           variants={fadeUpVariant}
           className="container-shell relative z-10 flex flex-col gap-8 md:flex-row md:items-center md:justify-between"
         >
           <div className="w-full min-w-0">
-            <p className="micro-copy section-eyebrow text-[#f1d1b8]">{pageContent.cta_eyebrow}</p>
+            <p className="micro-copy section-eyebrow text-[#f1d1b8]">{pageContent?.cta_eyebrow}</p>
             <h2 className="display-serif mt-4 max-w-3xl text-5xl leading-none sm:text-6xl md:text-7xl">
-              {pageContent.cta_title}
+              {pageContent?.cta_title}
             </h2>
           </div>
           <Link
             to="/contact"
             className="inline-flex w-full justify-center rounded-full bg-[#fffdf8] px-8 py-4 text-sm font-bold uppercase tracking-wider text-[#70443d] transition-all hover:bg-[#f1d1b8] hover:scale-105 active:scale-95 shadow-xl sm:w-fit shrink-0"
           >
-            {pageContent.cta_button_label}
+            {pageContent?.cta_button_label}
           </Link>
         </motion.div>
       </section>
