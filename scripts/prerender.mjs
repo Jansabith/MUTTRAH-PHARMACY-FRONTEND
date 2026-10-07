@@ -33,6 +33,12 @@ const API = (process.env.PRERENDER_API_URL || 'https://api.muttrahpharmacy.com/a
 const DIST = fileURLToPath(new URL('../dist/', import.meta.url))
 const GENERATED_DIRS = ['about', 'contact', 'products', '_pre']
 
+// A visitor's browser runs this at once and hides the plain pre-rendered
+// text, so it doesn't flash on screen before the app replaces it. Crawlers
+// that don't run JavaScript never apply it and still read the text.
+const HIDE_FROM_BROWSERS = `<script>document.documentElement.setAttribute('data-js', '')</script>
+    <style>[data-js] #prerendered { display: none }</style>`
+
 // ---------- data ----------
 
 async function getJson(url) {
@@ -134,7 +140,7 @@ function createSite({ products, companies, categories, home, about, contact }) {
         <p>${escapeHtml(SITE_NAME)}, ${escapeHtml(contact.address || 'Muttrah, Muscat, Oman')}${contact.phone ? ` · Phone ${escapeHtml(contact.phone)}` : ''}${contact.email ? ` · ${escapeHtml(contact.email)}` : ''}</p>
       </footer>`
   const body = (main) =>
-    `<div style="max-width:72rem;margin:0 auto;padding:1.5rem 1rem;line-height:1.6">
+    `<div id="prerendered" style="max-width:72rem;margin:0 auto;padding:1.5rem 1rem;line-height:1.6">
       ${header}
       <main>${main}</main>
       ${footer}
@@ -378,7 +384,7 @@ async function main() {
   for (const page of pages) {
     // Function replacements: a "$" in product text must not be read as a pattern
     const html = baseHtml
-      .replace('</head>', () => `  ${page.head}\n  </head>`)
+      .replace('</head>', () => `  ${HIDE_FROM_BROWSERS}\n    ${page.head}\n  </head>`)
       .replace('<div id="root"></div>', () => `<div id="root">${page.body}</div>`)
     const file = path.join(DIST, page.file)
     await mkdir(path.dirname(file), { recursive: true })
