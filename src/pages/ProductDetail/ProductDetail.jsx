@@ -9,6 +9,7 @@ import {
   productsAPI,
 } from '../../services/api'
 import SEO from '../../components/SEO/SEO'
+import { productBreadcrumbSchema, productSchema } from '../../components/SEO/siteMeta'
 import ShareButton from '../../components/ShareButton/ShareButton'
 import ProductGallery from '../../components/ProductGallery/ProductGallery'
 import { trackEvent } from '../../services/analytics'
@@ -103,29 +104,10 @@ export default function ProductDetail() {
     )
   }
 
-  const productSchema = {
-    '@context': 'https://schema.org',
-    '@type': 'Product',
-    'name': product.name,
-    'description': product.description,
-    'image': getMediaUrl(product.image),
-    'category': product.category_name,
-    'brand': {
-      '@type': 'Brand',
-      'name': product.company_name
-    },
-    'offers': {
-      '@type': 'AggregateOffer',
-      'priceCurrency': 'OMR',
-      'offers': [
-        {
-          '@type': 'Offer',
-          'availability': product.is_available !== false ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
-          'url': window.location.href
-        }
-      ]
-    }
-  }
+  const schema = [
+    productSchema(product, galleryImages.map((image) => image.src)),
+    productBreadcrumbSchema(product),
+  ]
 
   return (
     <>
@@ -134,7 +116,8 @@ export default function ProductDetail() {
         description={product.meta_description || product.description?.substring(0, 155)}
         keywords={product.meta_keywords || `${product.name}, ${product.company_name}, Muttrah Pharmacy, Oman`}
         image={getMediaUrl(product.image)}
-        schema={productSchema}
+        schema={schema}
+        type="product"
       />
       <main className="border-b border-[#ded8cc] bg-[#fffdf8] pb-6 pt-2 sm:pb-8 sm:pt-3 lg:pb-6 lg:pt-3">
         <article className="container-shell max-w-[96rem]">

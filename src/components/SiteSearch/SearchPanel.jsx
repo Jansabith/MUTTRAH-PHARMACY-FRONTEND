@@ -90,6 +90,7 @@ export default function SearchPanel({ open, onClose }) {
   const [result, setResult] = useState({ query: '', data: null, error: false })
   const [activeIndex, setActiveIndex] = useState(-1)
   const [brands, setBrands] = useState([])
+  const [keyboardMaxHeight, setKeyboardMaxHeight] = useState(null)
 
   const term = normalize(query)
   const isSearching = term.length >= MIN_LENGTH
@@ -119,6 +120,28 @@ export default function SearchPanel({ open, onClose }) {
       window.removeEventListener('keydown', onKeyDown)
     }
   }, [open, onClose])
+
+  // On phones the on-screen keyboard shrinks the visual viewport without
+  // resizing the layout viewport the panel is sized against (100svh), so
+  // the bottom results and footer end up hidden behind the keyboard with
+  // no way to scroll to them. Clamp the panel to the visible area instead.
+  useEffect(() => {
+    if (!open) return undefined
+    const viewport = window.visualViewport
+    if (!viewport) return undefined
+    const update = () => {
+      const hiddenByKeyboard = window.innerHeight - viewport.height
+      setKeyboardMaxHeight(hiddenByKeyboard > 80 ? Math.max(200, viewport.height - 24) : null)
+    }
+    update()
+    viewport.addEventListener('resize', update)
+    viewport.addEventListener('scroll', update)
+    return () => {
+      viewport.removeEventListener('resize', update)
+      viewport.removeEventListener('scroll', update)
+      setKeyboardMaxHeight(null)
+    }
+  }, [open])
 
   // Brand shortcuts for the empty state (already cached by the navbar)
   useEffect(() => {
@@ -209,6 +232,7 @@ export default function SearchPanel({ open, onClose }) {
       />
 
       <div
+        style={keyboardMaxHeight ? { maxHeight: `${keyboardMaxHeight}px` } : undefined}
         className={[
           'relative flex max-h-[calc(100svh-1.5rem)] w-full max-w-3xl flex-col overflow-hidden rounded-[1.75rem] border border-[#ded8cc] bg-[#fffdf8] shadow-[0_40px_120px_rgba(17,16,14,0.35)] transition-all duration-300 ease-out sm:max-h-[min(78vh,640px)]',
           visible ? 'translate-y-0 scale-100 opacity-100' : '-translate-y-3 scale-[0.98] opacity-0',

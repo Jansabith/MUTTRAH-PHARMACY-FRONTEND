@@ -1,5 +1,5 @@
 import React, { Suspense } from 'react'
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { BrowserRouter, Route, Routes, useParams } from 'react-router-dom'
 import MainLayout from '../layouts/MainLayout'
 const About = React.lazy(() => import('../pages/About/About'))
 const Contact = React.lazy(() => import('../pages/Contact/Contact'))
@@ -10,6 +10,14 @@ const Products = React.lazy(() => import('../pages/Products/Products'))
 const NotFound = React.lazy(() => import('../pages/NotFound/NotFound'))
 import Loader from '../components/Loader/Loader'
 import ScrollToTop from '../components/ScrollToTop/ScrollToTop'
+
+// Forces a full remount when the slug changes, so a product-to-product
+// navigation (e.g. from search or related items) doesn't carry over the
+// previous product's gallery scroll position and state.
+function ProductDetailRoute() {
+  const { slug } = useParams()
+  return <ProductDetail key={slug} />
+}
 
 export default function AppRoutes() {
   return (
@@ -25,7 +33,7 @@ export default function AppRoutes() {
           } />
           <Route path="/products/:slug" element={
             <Suspense fallback={<Loader />}>
-              <ProductDetail />
+              <ProductDetailRoute />
             </Suspense>
           } />
           <Route path="/about" element={

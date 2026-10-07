@@ -6,6 +6,14 @@ import ProductFilters from '../../components/ProductFilters/ProductFilters'
 import { categoriesAPI, companiesAPI, matchesUrlName, productsAPI, urlName } from '../../services/api'
 import { AnimatePresence, motion } from 'framer-motion'
 import SEO from '../../components/SEO/SEO'
+import FeatureIcon from '../../components/FeatureIcon/FeatureIcon'
+import { SITE_URL } from '../../components/SEO/siteMeta'
+
+const heroHighlights = [
+  { icon: 'shield', label: 'Quality Products' },
+  { icon: 'truck', label: 'Bulk Product Delivery' },
+  { icon: 'box', label: 'Wide Product Range' },
+]
 
 const fadeUpVariant = {
   hidden: { opacity: 0, y: 30 },
@@ -311,13 +319,13 @@ export default function Products() {
   }
   if (selectedCategory) canonicalParams.set('category', selectedCategoryData ? urlName(selectedCategoryData) : selectedCategory)
   const canonicalQuery = canonicalParams.toString()
-  const canonicalUrl = `${window.location.origin}/products${canonicalQuery ? `?${canonicalQuery}` : ''}`
+  const canonicalUrl = `${SITE_URL}/products${canonicalQuery ? `?${canonicalQuery}` : ''}`
 
   // A search result is a thin, ever-changing page - keep it out of Google
   const isSearchResults = Boolean(searchParams.get('search'))
 
   return (
-    <section className="section-padding bg-[#f8f5ee] min-h-screen">
+    <section className="bg-[#f8f5ee] min-h-screen pb-14 pt-2 sm:pb-24 sm:pt-3">
       <SEO
         title={dynamicTitle}
         description={dynamicDesc}
@@ -326,17 +334,43 @@ export default function Products() {
         noIndex={isSearchResults}
       />
       <div className="container-shell">
-        <motion.div 
+        <motion.div
           initial="hidden"
           animate="visible"
           variants={fadeUpVariant}
-          className="mb-6 border-b border-[#ded8cc] pb-6 sm:mb-12 sm:pb-10"
+          className="relative mb-6 overflow-hidden border-b border-[#ded8cc] pb-6 sm:mb-12 sm:pb-10 lg:mb-14 lg:flex lg:h-80 lg:items-center lg:border-0 lg:pb-0"
         >
-          <div>
+          {/* Desktop only: full-bleed image fading into the page, premium banner feel */}
+          <div className="absolute inset-0 hidden lg:block">
+            <img
+              src="/products-hero.webp"
+              alt=""
+              aria-hidden="true"
+              loading="eager"
+              className="h-full w-full object-cover"
+            />
+            <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(248,245,238,0.97)_0%,rgba(248,245,238,0.88)_38%,rgba(248,245,238,0.25)_68%,rgba(248,245,238,0)_92%)]" />
+          </div>
+
+          <div className="relative z-10 lg:px-10">
             <p className="micro-copy section-eyebrow text-[#70443d]">Products</p>
-            <h1 className="display-serif page-title mt-4 text-stone-950">
+            <h1 className="display-serif page-title mt-4 text-stone-950 lg:max-w-xl lg:text-[2.75rem]! lg:leading-[1.05]!">
               Product catalog
             </h1>
+            <p className="mt-3 max-w-md text-sm text-stone-600 sm:text-base">
+              Explore our wide range of healthcare and wellness products.
+            </p>
+
+            <ul className="mt-6 hidden gap-x-10 gap-y-4 lg:flex">
+              {heroHighlights.map(({ icon, label }) => (
+                <li key={label} className="flex items-center gap-2.5">
+                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[#ded8cc] bg-[#fffdf8]/85 backdrop-blur">
+                    <FeatureIcon name={icon} className="h-[18px] w-[18px] text-[#70443d]" />
+                  </span>
+                  <span className="text-xs font-bold uppercase tracking-wide text-stone-700">{label}</span>
+                </li>
+              ))}
+            </ul>
           </div>
         </motion.div>
 
@@ -397,12 +431,6 @@ export default function Products() {
             animate="visible"
             variants={staggerContainer}
           >
-            <motion.div variants={fadeUpVariant} className="mb-5 flex flex-col gap-2 rounded-2xl border border-[#ded8cc] bg-[#fffdf8] p-4 shadow-sm sm:flex-row sm:items-center sm:justify-between sm:p-5">
-              <p className="text-sm font-semibold text-stone-700">
-                Showing {products.length} {totalProducts > products.length ? `(of ${totalProducts})` : ''} products
-              </p>
-            </motion.div>
-
             {error ? (
               <motion.div variants={fadeUpVariant} className="rounded-2xl border border-[#70443d]/30 bg-[#fffdf8] p-5 text-sm font-semibold text-[#70443d]">
                 {error}
