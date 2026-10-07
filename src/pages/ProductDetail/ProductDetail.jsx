@@ -128,8 +128,10 @@ export default function ProductDetail() {
             Back to Products
           </Link>
 
+          {/* min-w-0: without it a column grows to fit the thumbnail strip
+              (6+ images is wider than a phone) and cuts off the right side */}
           <div className="grid items-start gap-5 lg:grid-cols-[0.72fr_1.28fr] lg:gap-7">
-            <div>
+            <div className="min-w-0">
               <ProductGallery
                 images={galleryImages}
                 youtubeId={youtubeId}
@@ -137,7 +139,7 @@ export default function ProductDetail() {
               />
             </div>
 
-            <div>
+            <div className="min-w-0">
               <div className="mb-3 flex flex-wrap gap-2">
                 {product.company_name && (
                   <span className="rounded-full border border-[#ded8cc] bg-[#f8f5ee] px-3 py-1 text-[0.68rem] font-bold uppercase text-stone-700">

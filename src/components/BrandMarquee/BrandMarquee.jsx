@@ -12,7 +12,8 @@ function ArrowButton({ direction, onClick }) {
       onClick={onClick}
       aria-label={isPrev ? 'Previous brands' : 'Next brands'}
       className={[
-        'absolute top-1/2 z-10 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-[#e2d6c7] bg-[#fffdf8] text-stone-800 shadow-md transition-all duration-300 hover:scale-110 hover:border-[#70443d] hover:bg-[#70443d] hover:text-[#fffdf8] active:scale-95 sm:h-12 sm:w-12',
+        // Phones swipe the strip with a finger instead
+        'absolute top-1/2 z-10 hidden h-11 w-11 -translate-y-1/2 md:flex items-center justify-center rounded-full border border-[#e2d6c7] bg-[#fffdf8] text-stone-800 shadow-md transition-all duration-300 hover:scale-110 hover:border-[#70443d] hover:bg-[#70443d] hover:text-[#fffdf8] active:scale-95 sm:h-12 sm:w-12',
         isPrev ? 'left-1 sm:-left-2' : 'right-1 sm:-right-2',
       ].join(' ')}
     >
@@ -78,12 +79,12 @@ function BrandCard({ company, isClone }) {
 // Endless right-to-left strip of brand cards. It scrolls on its own, pauses
 // while hovered or focused, and the arrows glide it one card either way.
 export default function BrandMarquee({ companies }) {
-  const { trackRef, slideBy, pauseProps } = useMarquee({ speed: AUTO_SPEED, direction: 'left' })
+  const { trackRef, slideBy, pauseProps, swipeProps } = useMarquee({ speed: AUTO_SPEED, direction: 'left' })
 
   return (
     <div className="relative" {...pauseProps}>
       <ArrowButton direction="prev" onClick={() => slideBy(-1)} />
-      <div className="marquee-fade overflow-hidden py-3">
+      <div className="marquee-fade touch-pan-y overflow-hidden py-3" {...swipeProps}>
         <div ref={trackRef} className="flex w-max items-stretch will-change-transform">
           {[0, 1].map((copy) =>
             companies.map((company) => (
