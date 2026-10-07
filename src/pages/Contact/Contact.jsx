@@ -74,7 +74,7 @@ export default function Contact() {
     <section className="section-padding bg-[#fffdf8] min-h-screen">
       <SEO
         title={pageContent.meta_title || "Contact Us"}
-        description={pageContent.meta_description}
+        description={pageContent.meta_description || pageContent.description}
         keywords={pageContent.meta_keywords}
         schema={contactSchema}
       />

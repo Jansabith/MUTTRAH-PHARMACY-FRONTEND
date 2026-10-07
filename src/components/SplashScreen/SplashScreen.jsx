@@ -1,32 +1,24 @@
 import { useEffect, useState } from 'react'
 
+const SPLASH_DURATION = 1800
+
 export default function SplashScreen({ onComplete }) {
-  const [progress, setProgress] = useState(1)
   const [exiting, setExiting] = useState(false)
 
   useEffect(() => {
     // Prevent scrolling on both html and body for mobile browsers
     const htmlOverflow = document.documentElement.style.overflow
     const bodyOverflow = document.body.style.overflow
-    
+
     document.documentElement.style.overflow = 'hidden'
     document.body.style.overflow = 'hidden'
 
-    const interval = window.setInterval(() => {
-      setProgress((current) => {
-        if (current >= 100) {
-          window.clearInterval(interval)
-          window.setTimeout(() => setExiting(true), 250)
-          window.setTimeout(onComplete, 700)
-          return 100
-        }
-
-        return current + 1
-      })
-    }, 18)
+    const exitTimer = window.setTimeout(() => setExiting(true), SPLASH_DURATION)
+    const completeTimer = window.setTimeout(onComplete, SPLASH_DURATION + 500)
 
     return () => {
-      window.clearInterval(interval)
+      window.clearTimeout(exitTimer)
+      window.clearTimeout(completeTimer)
       // Restore styles on cleanup
       document.documentElement.style.overflow = htmlOverflow
       document.body.style.overflow = bodyOverflow
@@ -61,20 +53,7 @@ export default function SplashScreen({ onComplete }) {
         <p className="mx-auto mt-3 sm:mt-4 max-w-sm text-xs min-[380px]:text-sm leading-relaxed text-stone-600 sm:text-base">
           Pharmaceutical and orthopedic distribution in Oman
         </p>
-
-        <div className="mt-8 sm:mt-10 w-full">
-          <div className="mb-2 sm:mb-3 flex justify-end text-[0.65rem] sm:text-xs font-bold uppercase tracking-[0.14em] text-blue-800">
-            <span>{progress}%</span>
-          </div>
-          <div className="h-1.5 sm:h-2 overflow-hidden bg-stone-200 rounded-full">
-            <div
-              className="h-full bg-gradient-to-r from-blue-800 to-blue-500 transition-[width] duration-150 ease-out rounded-full"
-              style={{ width: `${progress}%` }}
-            />
-          </div>
-        </div>
       </div>
     </div>
   )
 }
-

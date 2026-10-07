@@ -1,5 +1,12 @@
 import { useEffect } from 'react'
 import { Helmet } from 'react-helmet-async'
+import {
+  DEFAULT_DESCRIPTION,
+  DEFAULT_IMAGE,
+  DEFAULT_KEYWORDS,
+  SITE_URL,
+  formatTitle,
+} from './siteMeta'
 
 // index.html carries its own static title/description/OG tags, so visitors
 // whose browser never runs this app's JavaScript (WhatsApp/Facebook link
@@ -25,22 +32,14 @@ function removeStaticFallbackTags() {
 // noIndex: true keeps a page out of Google (e.g. search results), and
 // suppresses the canonical link, since a page that must not be indexed
 // doesn't need one.
-export default function SEO({ title, description, keywords, image, schema, canonical, noIndex }) {
-  const defaultTitle = 'Muttrah Pharmacy | Medical & Orthopedic Distributor in Oman'
-  const defaultDesc = 'Muttrah Pharmacy is a leading distributor and warehouse partner for clinics, hospitals, and pharmacies sourcing quality pharmaceutical and orthopedic products in Oman.'
-  const defaultKeywords = 'Muttrah Pharmacy, pharmacy Oman, orthopedic distributor Oman, medical supplies Muscat, pharmaceutical wholesaler Oman, bulk medicines Muscat'
-  const defaultImage = 'https://muttrahpharmacy.com/muttrah_logo_480.webp' // Fallback image
-
-  // Don't repeat the brand when a custom SEO title already includes it
-  const metaTitle = !title
-    ? defaultTitle
-    : /muttrah pharmacy/i.test(title)
-      ? title
-      : `${title} | Muttrah Pharmacy`
-  const metaDesc = description || defaultDesc
-  const metaKeywords = keywords || defaultKeywords
-  const metaImage = image || defaultImage
-  const canonicalUrl = canonical || `${window.location.origin}${window.location.pathname}`
+//
+// type: the og:type, "website" unless a page says otherwise ("product").
+export default function SEO({ title, description, keywords, image, schema, canonical, noIndex, type = 'website' }) {
+  const metaTitle = formatTitle(title)
+  const metaDesc = description || DEFAULT_DESCRIPTION
+  const metaKeywords = keywords || DEFAULT_KEYWORDS
+  const metaImage = image || DEFAULT_IMAGE
+  const canonicalUrl = canonical || `${SITE_URL}${window.location.pathname}`
 
   useEffect(() => {
     removeStaticFallbackTags()
@@ -63,7 +62,7 @@ export default function SEO({ title, description, keywords, image, schema, canon
       )}
 
       {/* Open Graph / Facebook */}
-      <meta property="og:type" content="website" />
+      <meta property="og:type" content={type} />
       <meta property="og:title" content={metaTitle} />
       <meta property="og:description" content={metaDesc} />
       <meta property="og:image" content={metaImage} />

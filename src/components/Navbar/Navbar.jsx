@@ -214,7 +214,7 @@ export default function Navbar() {
           <Link
             to="/"
             className={[
-              'display-serif flex min-w-0 flex-1 items-center gap-2 text-xl leading-none transition-colors duration-500 sm:gap-3 sm:text-3xl lg:flex-none',
+              'display-serif flex min-w-0 flex-1 items-center gap-2 text-xl leading-normal transition-colors duration-500 sm:gap-3 sm:text-3xl lg:flex-none',
               isDark ? 'text-white [text-shadow:0_1px_12px_rgba(0,0,0,0.35)]' : 'text-stone-950',
             ].join(' ')}
             onClick={() => setOpen(false)}

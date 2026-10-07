@@ -64,7 +64,7 @@ export default function About() {
     <div className="overflow-hidden">
       <SEO
         title={pageContent.meta_title || "About Us"}
-        description={pageContent.meta_description}
+        description={pageContent.meta_description || pageContent.overview}
         keywords={pageContent.meta_keywords}
       />
       {/* Hero Section */}
