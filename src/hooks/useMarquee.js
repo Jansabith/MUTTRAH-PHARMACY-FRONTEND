@@ -1,13 +1,17 @@
 import { useCallback, useEffect, useMemo, useRef } from 'react'
 
-const SLIDE_DURATION = 650 // ms for an arrow click
+const SLIDE_DURATION = 650 // ms for an arrow click or the glide after a swipe
+const DRAG_THRESHOLD = 8 // px a finger must move sideways before the strip follows it
+const RESUME_AFTER_SWIPE = 3000 // ms before auto-scrolling starts again
+const GLIDE_FACTOR = 250 // how far a swipe glides on: release speed (px/ms) x this
 
 const easeOutCubic = (t) => 1 - (1 - t) ** 3
 
 // Drives an endless, auto-scrolling strip. Render the items twice inside the
 // element given `trackRef` (mark each item with data-marquee-item) and the
 // strip loops seamlessly. It pauses while hovered or focused, and slideBy()
-// glides it one item either way for arrow buttons.
+// glides it one item either way for arrow buttons. Spread `swipeProps` on the
+// strip's visible area so a finger can drag it on touch screens.
 //
 //   direction: 'left'  - items travel right to left
 //              'right' - items travel left to right
@@ -17,6 +21,9 @@ export default function useMarquee({ speed = 40, direction = 'left', enabled = t
   const pausedRef = useRef(false)
   const slideRef = useRef(null)
   const enabledRef = useRef(enabled)
+  const dragRef = useRef(null)
+  const resumeAtRef = useRef(0)
+  const suppressClickRef = useRef(false)
 
   useEffect(() => {
     enabledRef.current = enabled
@@ -46,7 +53,7 @@ export default function useMarquee({ speed = 40, direction = 'left', enabled = t
           const progress = Math.min((now - slide.start) / SLIDE_DURATION, 1)
           offsetRef.current = slide.from + (slide.to - slide.from) * easeOutCubic(progress)
           if (progress === 1) slideRef.current = null
-        } else if (!pausedRef.current) {
+        } else if (!pausedRef.current && !dragRef.current?.active && now >= resumeAtRef.current) {
           offsetRef.current += (step * dt) / 1000
         }
 
@@ -90,5 +97,69 @@ export default function useMarquee({ speed = 40, direction = 'left', enabled = t
     return { onMouseEnter: pause, onMouseLeave: resume, onFocus: pause, onBlur: resume }
   }, [])
 
-  return { trackRef, slideBy, reset, pauseProps }
+  // Finger dragging (touch and pen only; mouse users have the arrows). The
+  // element needs `touch-action: pan-y` so the page still scrolls up and down
+  // and only sideways drags come here.
+  const swipeProps = useMemo(() => {
+    const onPointerDown = (event) => {
+      if (event.pointerType === 'mouse' || !enabledRef.current) return
+      dragRef.current = {
+        pointerId: event.pointerId,
+        startX: event.clientX,
+        startY: event.clientY,
+        startOffset: offsetRef.current,
+        lastX: event.clientX,
+        lastTime: event.timeStamp,
+        velocity: 0,
+        active: false,
+      }
+    }
+    const onPointerMove = (event) => {
+      const drag = dragRef.current
+      if (!drag || event.pointerId !== drag.pointerId) return
+      const dx = event.clientX - drag.startX
+      if (!drag.active) {
+        if (Math.abs(dx) < DRAG_THRESHOLD || Math.abs(dx) < Math.abs(event.clientY - drag.startY)) return
+        drag.active = true
+        slideRef.current = null
+        event.currentTarget.setPointerCapture?.(event.pointerId)
+      }
+      const elapsed = event.timeStamp - drag.lastTime
+      if (elapsed > 0) drag.velocity = (event.clientX - drag.lastX) / elapsed
+      drag.lastX = event.clientX
+      drag.lastTime = event.timeStamp
+      // Finger moving left pulls the items left
+      offsetRef.current = drag.startOffset - dx
+    }
+    const onPointerEnd = (event) => {
+      const drag = dragRef.current
+      if (!drag || event.pointerId !== drag.pointerId) return
+      dragRef.current = null
+      if (!drag.active) return
+      // The finger lifted on a card: that's the end of a swipe, not a tap.
+      // The flag expires so a later real tap is never swallowed.
+      suppressClickRef.current = true
+      setTimeout(() => {
+        suppressClickRef.current = false
+      }, 400)
+      const from = offsetRef.current
+      slideRef.current = { from, to: from - drag.velocity * GLIDE_FACTOR, start: performance.now() }
+      resumeAtRef.current = performance.now() + RESUME_AFTER_SWIPE
+    }
+    const onClickCapture = (event) => {
+      if (!suppressClickRef.current) return
+      suppressClickRef.current = false
+      event.preventDefault()
+      event.stopPropagation()
+    }
+    return {
+      onPointerDown,
+      onPointerMove,
+      onPointerUp: onPointerEnd,
+      onPointerCancel: onPointerEnd,
+      onClickCapture,
+    }
+  }, [])
+
+  return { trackRef, slideBy, reset, pauseProps, swipeProps }
 }

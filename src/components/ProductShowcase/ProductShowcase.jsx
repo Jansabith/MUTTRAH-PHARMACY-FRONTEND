@@ -50,7 +50,8 @@ function ArrowButton({ direction, top, onClick }) {
       aria-label={isPrev ? 'Previous products' : 'Next products'}
       style={{ top }}
       className={[
-        'absolute z-10 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-white/25 bg-black/60 text-white shadow-[0_8px_24px_rgba(0,0,0,0.5)] backdrop-blur-md transition-all duration-300 hover:scale-110 hover:border-[#b7774f] hover:bg-[#b7774f] active:scale-95 sm:h-11 sm:w-11',
+        // Phones swipe the strip with a finger instead
+        'absolute z-10 hidden h-10 w-10 -translate-y-1/2 md:flex items-center justify-center rounded-full border border-white/25 bg-black/60 text-white shadow-[0_8px_24px_rgba(0,0,0,0.5)] backdrop-blur-md transition-all duration-300 hover:scale-110 hover:border-[#b7774f] hover:bg-[#b7774f] active:scale-95 sm:h-11 sm:w-11',
         isPrev ? 'left-2' : 'right-2',
       ].join(' ')}
     >
@@ -162,7 +163,7 @@ export default function ProductShowcase() {
 
   // Only scroll when the tab has more products than fit on screen
   const isLooping = hasTabs && layout.cardWidth > 0 && activeTab.products.length > layout.perView
-  const { trackRef, slideBy, reset, pauseProps } = useMarquee({
+  const { trackRef, slideBy, reset, pauseProps, swipeProps } = useMarquee({
     speed: AUTO_SPEED,
     direction: AUTO_DIRECTION,
     enabled: isLooping,
@@ -244,7 +245,8 @@ export default function ProductShowcase() {
           {isLooping ? <ArrowButton direction="prev" top={arrowTop} onClick={() => slideBy(-1)} /> : null}
           <div
             ref={viewportRef}
-            className={['overflow-hidden', isLooping ? 'marquee-fade' : ''].join(' ')}
+            className={['touch-pan-y overflow-hidden', isLooping ? 'marquee-fade' : ''].join(' ')}
+            {...swipeProps}
           >
             <AnimatePresence mode="wait" onExitComplete={reset}>
               <motion.div

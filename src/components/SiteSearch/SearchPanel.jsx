@@ -85,6 +85,8 @@ function SkeletonRows() {
 export default function SearchPanel({ open, onClose }) {
   const navigate = useNavigate()
   const inputRef = useRef(null)
+  const dialogRef = useRef(null)
+  const listRef = useRef(null)
   const [visible, setVisible] = useState(false)
   const [query, setQuery] = useState('')
   const [result, setResult] = useState({ query: '', data: null, error: false })
@@ -140,6 +142,38 @@ export default function SearchPanel({ open, onClose }) {
       viewport.removeEventListener('resize', update)
       viewport.removeEventListener('scroll', update)
       setKeyboardMaxHeight(null)
+    }
+  }, [open])
+
+  // Phones (iPhone Safari especially) hand a finger drag that the results
+  // list can't use - on the search box, or past the list's top or bottom -
+  // to the page, which then drags the whole panel along with the finger.
+  // Only let a drag through when the results list will scroll from it.
+  useEffect(() => {
+    const dialog = dialogRef.current
+    if (!open || !dialog) return undefined
+    let lastY = 0
+    const onTouchStart = (event) => {
+      lastY = event.touches[0].clientY
+    }
+    const onTouchMove = (event) => {
+      const y = event.touches[0].clientY
+      const movingDown = y > lastY
+      lastY = y
+      if (event.target === inputRef.current) return
+      const list = listRef.current
+      if (list?.contains(event.target)) {
+        const atTop = list.scrollTop <= 0
+        const atBottom = Math.ceil(list.scrollTop + list.clientHeight) >= list.scrollHeight
+        if (movingDown ? !atTop : !atBottom) return
+      }
+      event.preventDefault()
+    }
+    dialog.addEventListener('touchstart', onTouchStart, { passive: true })
+    dialog.addEventListener('touchmove', onTouchMove, { passive: false })
+    return () => {
+      dialog.removeEventListener('touchstart', onTouchStart)
+      dialog.removeEventListener('touchmove', onTouchMove)
     }
   }, [open])
 
@@ -213,6 +247,7 @@ export default function SearchPanel({ open, onClose }) {
 
   return createPortal(
     <div
+      ref={dialogRef}
       className={[
         'fixed inset-0 z-[120] flex items-start justify-center px-3 pt-3 sm:px-6 sm:pt-20',
         open ? '' : 'pointer-events-none invisible',
@@ -281,7 +316,7 @@ export default function SearchPanel({ open, onClose }) {
           </button>
         </div>
 
-        <div data-lenis-prevent className="min-h-0 flex-1 overflow-y-auto overscroll-contain">
+        <div ref={listRef} data-lenis-prevent className="min-h-0 flex-1 overflow-y-auto overscroll-contain">
           {/* Before typing: brand shortcuts */}
           {!isSearching ? (
             <div className="p-4 sm:p-6">
