@@ -410,3 +410,53 @@ button[class*="h-18"] {
 .search-pill:focus-visible::before {
   background-position: 100% 0;
 }
+
+/* ==========================================================================
+   Google Reviews Badge Customization (Elfsight)
+   Makes the floating sticker compact, sleek, and removes bulky branding
+   ========================================================================== */
+[class*="elfsight-app"] [class*="BadgeContainer"],
+[class*="elfsight-app"] [class*="Sticker"],
+[class*="elfsight-app"] [class*="TagSticker"],
+[class*="elfsight-app"] > div:not([class*="Popup"]):not([class*="Modal"]):not([role="dialog"]) {
+  transform: scale(0.68) !important;
+  transform-origin: bottom left !important;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  filter: drop-shadow(0 6px 20px rgba(0, 0, 0, 0.14)) !important;
+}
+
+[class*="elfsight-app"] [class*="BadgeContainer"]:hover,
+[class*="elfsight-app"] [class*="Sticker"]:hover,
+[class*="elfsight-app"] [class*="TagSticker"]:hover,
+[class*="elfsight-app"] > div:not([class*="Popup"]):not([class*="Modal"]):not([role="dialog"]):hover {
+  transform: scale(0.74) !important;
+}
+
+/* Hide the bulky "Free Google Reviews Widget by Elfsight" text universally */
+a[href*="elfsight.com"],
+a[href*="dash.elfsight.com"],
+[class*="FreeLink"],
+[class*="free-link"],
+[class*="free_link"],
+[class*="es-badge-branding"],
+div:has(> a[href*="elfsight.com"]) {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  height: 0 !important;
+  width: 0 !important;
+  overflow: hidden !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+@media (max-width: 640px) {
+  [class*="elfsight-app"] [class*="BadgeContainer"],
+  [class*="elfsight-app"] [class*="Sticker"],
+  [class*="elfsight-app"] [class*="TagSticker"],
+  [class*="elfsight-app"] > div:not([class*="Popup"]):not([class*="Modal"]):not([role="dialog"]) {
+    transform: scale(0.58) !important;
+    transform-origin: bottom left !important;
+  }
+}
