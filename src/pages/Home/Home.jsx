@@ -61,7 +61,6 @@ export default function Home() {
 
   // Render the page shell immediately — content fills in when the API responds.
   // This avoids the jarring full-screen skeleton that previously blocked paint.
-  const ready = Boolean(pageContent)
 
   const localBusinessSchema = {
     '@context': 'https://schema.org',
