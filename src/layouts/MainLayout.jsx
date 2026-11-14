@@ -4,7 +4,6 @@ import Footer from '../components/Footer/Footer'
 import WhatsAppButton from '../components/WhatsAppButton/WhatsAppButton'
 import RouteTracker from '../components/Analytics/RouteTracker'
 import SmoothScroll from '../components/SmoothScroll/SmoothScroll'
-import GoogleReviewsBadge from '../components/GoogleReviews/GoogleReviewsBadge'
 
 export default function MainLayout() {
   return (
@@ -17,7 +16,6 @@ export default function MainLayout() {
       </main>
       <Footer />
       <WhatsAppButton />
-      <GoogleReviewsBadge />
     </div>
   )
 }
